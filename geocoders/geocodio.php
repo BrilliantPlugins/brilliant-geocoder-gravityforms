@@ -5,7 +5,6 @@
 add_filter( 'gfg_geocoders_fields', 'gfg_geocodio_fields' );
 add_filter( 'gfg_geocoders', 'gfg_geocodio_geocoders' );
 add_filter( 'gfg_geocoder_keys', 'gfg_geocodio_keys', 10, 3 );
-add_filter( 'enqueue_scripts', 'gfg_enqueue_scripts' );
 
 function gfg_geocodio_fields( $fields ) {
 	$fields['Geocod.io full address'] = array(

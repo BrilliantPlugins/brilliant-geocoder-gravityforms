@@ -166,7 +166,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	}
 
 	public function gform_pre_form_settings_save( $form ) {
-		$form['which_geocoder'] = rgpost( 'which_geocoder' );
+		$form['which_geocoder'] = trim( rgpost( 'which_geocoder' ) );
 		return $form;
 	}
 }
