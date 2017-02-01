@@ -21,8 +21,10 @@ jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 		html += '<td><label for="geocoding_source_' + i + '" class="inline">' + fields[i] + '</label></td>';
 
 		// Get the rule fields, then unset the onchange attribute
-		ruleFields = GetRuleFields('geocoding', i, '' );
-		ruleFields = jQuery(ruleFields).attr('onchange','SetFieldProperty(\'geocoding_mapping_'+ i +'\',this.value);');
+		ruleFields = jQuery( GetRuleFields('geocoding', i, '' ) );
+		ruleFields.prepend( '<option value=""><i>** Do Not Use **</i></option>' );
+		ruleFields.attr('onchange','SetFieldProperty(\'geocoding_mapping_'+ i +'\',this.value);');
+
 		if ( field['geocoding_mapping_' + i ] !== undefined ) {
 			ruleFields.find('option[value="'+ field['geocoding_mapping_' + i ] +'"]').attr('selected','selected');
 		}

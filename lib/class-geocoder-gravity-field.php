@@ -10,7 +10,6 @@ class GF_Field_Geocoder extends GF_Field {
 
 	public $type = 'geocoder';
 
-
     /**
      * We only want to print our field once.
      *
@@ -124,12 +123,28 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	public function get_form_inline_script_on_page_render( $form ) {
-		$script = 'console.log("inline script on page render")';
-		return $script;
-	}
+		$fields = array(
+			'addr' => 'Street Address',
+			'addr2' => 'Address Line 2',
+			'city' => 'City',
+			'state' => 'State / Province',
+			'zip' => 'ZIP / Postal Code',
+			'country' => 'Country'
+		);
 
-	public function get_form_editor_inline_script_on_page_render() {
-		$script = 'console.log("inline editor script on page render")';
+		$my_selector = 'input_' . $this->formId . '_' . $this->id;
+		$selectors = array();
+		foreach( $fields as $field => $label ) {
+			$key = 'geocoding_mapping_' . $field;
+			if ( !empty( $this->$key ) ) {
+				$selectors[] = 'input_' . $this->formId . '_' . str_replace('.','_',$this->$key);
+			}
+		}
+
+		$form['geocoding_engine'] = 'geocodio';
+
+		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . json_encode( array( 'fields' => $selectors, 'engine' => $form['geocoding_engine'] ) ) . ';';
+		$script .= "\n" . 'jQuery("#' . implode(',#', $selectors ) . '").on("change", gfg_update_geocoder);' . "\n";
 		return $script;
 	}
 }
