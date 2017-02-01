@@ -147,6 +147,9 @@ class GF_Field_Geocoder extends GF_Field {
 		$extra_keys = array();
 		if ( 'nomination' === $geocoding_engine ) {
 			$extra_keys['email'] = get_bloginfo('admin_email');
+			$extra_keys['format'] = 'jsonv2';
+			$extra_keys['extratags'] = 1;
+			$extra_keys['limit'] = 1;
 		}
 
 		$extra_keys = apply_filters( 'gfg_geocoder_keys', $extra_keys, $geocoding_engine, $form );
