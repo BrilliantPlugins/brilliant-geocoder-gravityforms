@@ -29,6 +29,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function init(){
 		parent::init();
 		add_action('gform_field_standard_settings', array($this, 'add_field_settings'), 10, 2);
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
 	public function add_field_settings( $position, $form_id ) {
@@ -85,5 +86,13 @@ class Geocoder_for_Gravity extends GFAddOn {
 		$description .= '<h2>Geocoding settings</h2>';
 
 		return $description;
+	}
+
+	public function admin_enqueue_scripts() {
+		if ( GFForms::get_page() === 'form_editor' ) {
+			$base_url = plugins_url( '', dirname( __FILE__ ) );
+			wp_enqueue_script( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.js', array( 'jquery' ), $this->_version );
+			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array( ), $this->_version );
+		}
 	}
 }

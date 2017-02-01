@@ -16,7 +16,7 @@ class GF_Field_Geocoder extends GF_Field {
      *
      * @var $fields_already_printed
      */
-    static $fields_already_printed = false;
+    static $fields_already_printed = array();
 
 	public function __construct( $data = array() ){
 		parent::__construct( $data );
@@ -88,22 +88,50 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	public function gform_field_advanced_settings( $position, $form_id ) {
+
 		if ( $position === 50 ) {
-
-            if ( GF_Field_Geocoder::$fields_already_printed ) {
-                return;
-            }
-
-            GF_Field_Geocoder::$fields_already_printed = true;
+			if ( in_array( '50', GF_Field_Geocoder::$fields_already_printed ) ) {
+				return ;
+			}
 
 			print '<li class="geocoding_setting field_setting">';
-				print '<label for="field_admin_label">Geocoding Source Fields</label>';
-				print '<table class="default_input_values"><tbody><tr><td><strong>Field</strong></td><td><strong>Default Value</strong></td></tr><tr class="default_input_value_row" data-input_id="2.1" id="input_default_value_row_input_2_1"><td><label for="field_default_value_2.1" class="inline">Street Address</label></td><td><input class="default_input_value" value="" id="field_default_value_2.1" type="text"></td></tr><tr class="default_input_value_row" data-input_id="2.2" id="input_default_value_row_input_2_2"><td><label for="field_default_value_2.2" class="inline">Address Line 2</label></td><td><input class="default_input_value" value="" id="field_default_value_2.2" type="text"></td></tr><tr class="default_input_value_row" data-input_id="2.3" id="input_default_value_row_input_2_3"><td><label for="field_default_value_2.3" class="inline">City</label></td><td><input class="default_input_value" value="" id="field_default_value_2.3" type="text"></td></tr><tr class="default_input_value_row" data-input_id="2.4" id="input_default_value_row_input_2_4"><td><label for="field_default_value_2.4" class="inline">State / Province</label></td><td><input class="default_input_value" value="" id="field_default_value_2.4" type="text"></td></tr><tr class="default_input_value_row" data-input_id="2.5" id="input_default_value_row_input_2_5"><td><label for="field_default_value_2.5" class="inline">ZIP / Postal Code</label></td><td><input class="default_input_value" value="" id="field_default_value_2.5" type="text"></td></tr><tr class="default_input_value_row" data-input_id="2.6" id="input_default_value_row_input_2_6"><td><label for="field_default_value_2.6" class="inline">Country</label></td><td><input class="default_input_value" value="" id="field_default_value_2.6" type="text"></td></tr></tbody></table>';
+			print '<label for="field_admin_label">Geocoding Source Fields</label>';
+			print '<p>Configure the mapping for the Geocoding service. Not all services require all fields.</p>';
+			print '<table class="default_input_values" id="">';
+
+			print '<thead><tr>';
+				print '<td><strong>Field</strong></td>';
+				print '<td><strong>Source Field</strong></td>';
+			print '</tr></thead><tbody>';
+
+			print '</tbody></table>';
 			print '</li>';
+
+			GF_Field_Geocoder::$fields_already_printed[] = 50;
+
+		} else if ( $position === 150 ) {
+
+			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed ) ) {
+				return ;
+			}
+
+			print '<p>';
+			print 'The default value, if set, should be a valid GeoJSON string. Probably a point.';
+			print '</p>';
+
+			GF_Field_Geocoder::$fields_already_printed[] = 150;
 		}
 	}
 
+	public function get_form_inline_script_on_page_render( $form ) {
+		$script = 'console.log("inline script on page render")';
+		return $script;
+	}
 
+	public function get_form_editor_inline_script_on_page_render() {
+		$script = 'console.log("inline editor script on page render")';
+		return $script;
+	}
 }
 
 // GetRuleFields
