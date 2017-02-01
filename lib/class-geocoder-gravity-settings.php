@@ -45,29 +45,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 	public function get_geocoders() {
 		$geocoders = array(
-			array(
-				'name' => 'geocodio_key',
-				'label' => 'Geocod.io API Key',
-				'type' => 'text',
-				'class' => 'small',
-				'placeholder' => 'Geocod.io API Key',
-				'geocoder' => 'Geocod.io simple query',
-				'geocoder_engine' => 'geocodio',
-			),
-			array(
-				'name' => 'geocodio_key',
-				'geocoder' => 'Geocod.io full address',
-				'geocoder_engine' => 'geocodio',
-			),
-			array(
-				'name' => 'google_maps_key',
-				'label' => 'Google Maps API Key', 
-				'type' => 'text',
-				'class' => 'small',
-				'placeholder' => 'Google Maps API Key',
-				'geocoder' => 'Google Maps API',
-				'geocoder_engine' => 'google_maps',
-			),
+
 			array(
 				'geocoder' => 'OSM Nomination simple query',
 				'geocoder_engine' => 'nomination',

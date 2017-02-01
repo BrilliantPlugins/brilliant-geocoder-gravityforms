@@ -125,11 +125,9 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	public function get_form_inline_script_on_page_render( $form ) {
-
-
 		$geocoders = $this->get_geocoder_field_mapping();
 		$gfg = Geocoder_for_Gravity::get_instance();
-		$geocoder_engine = $gfg->get_engine_for_geocoder( $form[ 'which_geocoder' ] );
+		$geocoding_engine = $gfg->get_engine_for_geocoder( $form[ 'which_geocoder' ] );
 
 		$fields = $geocoders[ $form['which_geocoder' ] ];
 
@@ -143,10 +141,19 @@ class GF_Field_Geocoder extends GF_Field {
 			}
 		}
 
-		$form['geocoding_engine'] = 'geocodio';
-
-		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . json_encode( array( 'fields' => $selectors, 'engine' => $form['geocoding_engine'] ) ) . ';';
+		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . json_encode( array( 'fields' => $selectors, 'engine' => $geocoding_engine ) ) . ';';
 		$script .= "\n" . 'jQuery("#' . implode(',#', array_keys( $selectors ) ) . '").on("change", gfg_update_geocoder);' . "\n";
+
+		$extra_keys = array();
+		if ( 'nomination' === $geocoding_engine ) {
+			$extra_keys['email'] = get_bloginfo('admin_email');
+		}
+
+		$extra_keys = apply_filters( 'gfg_geocoder_keys', $extra_keys, $geocoding_engine, $form );
+
+		if ( !empty( $extra_keys ) ) {
+			$script .= "\n" . 'gfg_geocoder_keys.' . $geocoding_engine . ' = ' . json_encode( $extra_keys ) . ';';
+		}
 
 		return $script;
 	}
@@ -163,19 +170,6 @@ class GF_Field_Geocoder extends GF_Field {
 	public function get_geocoder_field_mapping() {
 
 		$geocoders = array(
-			'Geocod.io full address' => array(
-				'street'		=> 'Street',
-				'city'			=> 'City',
-				'state'			=> 'State',
-				'postal_code'	=> 'Postal Code',
-				'country'		=> 'Country' 
-			),
-			'Geocod.io simple query' => array(
-				'q'				=> 'Search Field'
-			),
-			'Google Maps API' => array(
-
-			),
 			'OSM Nomination simple query' => array(
 				'q'				=> 'Search Field'
 			),
