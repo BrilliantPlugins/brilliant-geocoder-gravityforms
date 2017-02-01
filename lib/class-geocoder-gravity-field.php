@@ -93,9 +93,11 @@ class GF_Field_Geocoder extends GF_Field {
 				return ;
 			}
 
+			$form = GFAPI::get_form( $form_id );
+
 			print '<li class="geocoding_setting field_setting">';
 			print '<label for="field_admin_label">Geocoding Source Fields</label>';
-			print '<p>Configure the mapping for the Geocoding service. Not all services require all fields.</p>';
+			print '<p>Configure the mapping for the <em>' . $form['which_geocoder'] . '</em> eocoding service.</p>';
 			print '<table class="default_input_values" id="">';
 
 			print '<thead><tr>';
@@ -123,29 +125,74 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	public function get_form_inline_script_on_page_render( $form ) {
-		$fields = array(
-			'addr' => 'Street Address',
-			'addr2' => 'Address Line 2',
-			'city' => 'City',
-			'state' => 'State / Province',
-			'zip' => 'ZIP / Postal Code',
-			'country' => 'Country'
-		);
+
+
+		$geocoders = $this->get_geocoder_field_mapping();
+		$gfg = Geocoder_for_Gravity::get_instance();
+		$geocoder_engine = $gfg->get_engine_for_geocoder( $form[ 'which_geocoder' ] );
+
+		$fields = $geocoders[ $form['which_geocoder' ] ];
 
 		$my_selector = 'input_' . $this->formId . '_' . $this->id;
 		$selectors = array();
 		foreach( $fields as $field => $label ) {
 			$key = 'geocoding_mapping_' . $field;
 			if ( !empty( $this->$key ) ) {
-				$selectors[] = 'input_' . $this->formId . '_' . str_replace('.','_',$this->$key);
+				$selector = 'input_' . $this->formId . '_' . str_replace('.','_',$this->$key);
+				$selectors[ $selector ] = $field;
 			}
 		}
 
 		$form['geocoding_engine'] = 'geocodio';
 
 		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . json_encode( array( 'fields' => $selectors, 'engine' => $form['geocoding_engine'] ) ) . ';';
-		$script .= "\n" . 'jQuery("#' . implode(',#', $selectors ) . '").on("change", gfg_update_geocoder);' . "\n";
+		$script .= "\n" . 'jQuery("#' . implode(',#', array_keys( $selectors ) ) . '").on("change", gfg_update_geocoder);' . "\n";
+
 		return $script;
+	}
+
+	public function get_form_editor_inline_script_on_page_render() {
+		$someJS = parent::get_form_editor_inline_script_on_page_render();
+
+
+		$geocoders = $this->get_geocoder_field_mapping();
+		$someJS .= 'window.gfg_geocoders = ' . json_encode( $geocoders ) . ';';
+		return $someJS;
+	}
+
+	public function get_geocoder_field_mapping() {
+
+		$geocoders = array(
+			'Geocod.io full address' => array(
+				'street'		=> 'Street',
+				'city'			=> 'City',
+				'state'			=> 'State',
+				'postal_code'	=> 'Postal Code',
+				'country'		=> 'Country' 
+			),
+			'Geocod.io simple query' => array(
+				'q'				=> 'Search Field'
+			),
+			'Google Maps API' => array(
+
+			),
+			'OSM Nomination simple query' => array(
+				'q'				=> 'Search Field'
+			),
+			'OSM Nomination full address' => array(
+				'street'		=> 'Street',
+				'city'			=> 'City',
+				'county'		=> 'County',
+				'state'			=> 'State',
+				'country'		=> 'Country',
+				'postalcode'	=> 'Postal Code',
+				'countrycode'	=> 'ISO 3166-1alpha2 Country Code'
+			)
+		);
+
+		$geocoders = apply_filters( 'gfg_geocoders_fields', $geocoders );
+
+		return $geocoders;
 	}
 }
 

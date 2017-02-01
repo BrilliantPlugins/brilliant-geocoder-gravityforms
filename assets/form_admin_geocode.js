@@ -4,14 +4,7 @@ jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 		return;
 	}
 
-	var fields = {
-		'addr': 'Street Address',
-		'addr2': 'Address Line 2',
-		'city': 'City',
-		'state': 'State / Province',
-		'zip': 'ZIP / Postal Code',
-		'country': 'Country'
-	};
+	var fields = gfg_geocoders[ form.which_geocoder ];
 
 	var ruleFields;
 	var html = '';
@@ -22,7 +15,7 @@ jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 
 		// Get the rule fields, then unset the onchange attribute
 		ruleFields = jQuery( GetRuleFields('geocoding', i, '' ) );
-		ruleFields.prepend( '<option value=""><i>** Do Not Use **</i></option>' );
+		ruleFields.prepend( '<option value="">Don\'t geocode with this field</option>' );
 		ruleFields.attr('onchange','SetFieldProperty(\'geocoding_mapping_'+ i +'\',this.value);');
 
 		if ( field['geocoding_mapping_' + i ] !== undefined ) {

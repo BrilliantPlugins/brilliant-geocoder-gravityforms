@@ -1,3 +1,7 @@
 .geocoding_setting .gfield_rule_select {
 	width: 250px;
 }
+
+.geocoding_setting .gfield_rule_select option:first-child {
+	font-style: italic;
+}

@@ -51,7 +51,13 @@ class Geocoder_for_Gravity extends GFAddOn {
 				'type' => 'text',
 				'class' => 'small',
 				'placeholder' => 'Geocod.io API Key',
-				'geocoder' => 'Geocod.io',
+				'geocoder' => 'Geocod.io simple query',
+				'geocoder_engine' => 'geocodio',
+			),
+			array(
+				'name' => 'geocodio_key',
+				'geocoder' => 'Geocod.io full address',
+				'geocoder_engine' => 'geocodio',
 			),
 			array(
 				'name' => 'google_maps_key',
@@ -60,9 +66,15 @@ class Geocoder_for_Gravity extends GFAddOn {
 				'class' => 'small',
 				'placeholder' => 'Google Maps API Key',
 				'geocoder' => 'Google Maps API',
-				),
+				'geocoder_engine' => 'google_maps',
+			),
 			array(
-				'geocoder' => 'OSM Nomination'
+				'geocoder' => 'OSM Nomination simple query',
+				'geocoder_engine' => 'nomination',
+			),
+			array(
+				'geocoder' => 'OSM Nomination full address',
+				'geocoder_engine' => 'nomination',
 			)
 		);
 
@@ -71,13 +83,24 @@ class Geocoder_for_Gravity extends GFAddOn {
 		return $geocoders;
 	}
 
+	public function get_engine_for_geocoder( $in_use_geocoder ) {
+		$geocoders = $this->get_geocoders();
+		foreach( $geocoders as $geocoder ) {
+			if ( $geocoder[ 'geocoder' ] === $in_use_geocoder ) {
+				return $geocoder[ 'geocoder_engine' ];
+			}
+		}
+
+		return false;
+	}
+
 	public function plugin_settings_fields() {
 		$settings = $this->get_plugin_settings();
 
 		$geocoders = $this->get_geocoders();
 
 		$geocoders = array_filter( $geocoders, function( $g ){
-			return array_key_exists( 'type', $g );
+			return array_key_exists( 'label', $g );
 		});
 
 		$geocoders[] = array(
@@ -106,6 +129,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 		/* Introduction. */
 		$description = '';
 		$description .= '<h2>Geocoding settings</h2>';
+		$description .= '<p>http://wiki.openstreetmap.org/wiki/Nominatim, https://geocod.io/docs/#single-address</p>';
 
 		return $description;
 	}
@@ -131,7 +155,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 		// See which geocoder we're using. Default to the OSM Nomination geocoder
 		$selected_geocoder = rgar( $form, 'which_geocoder' );
-		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nomination' : $selected_geocoder );
+		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nomination simple query' : $selected_geocoder );
 
 		// Build up the options
 		$options = '';
@@ -139,7 +163,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 		foreach( $geocoders as $geocoder ) {
 
 			// Check if we have the required keys for the service
-			if ( array_key_exists( 'name', $geocoder ) && empty( $plugin_settings[ $geocoder['name'] ] ) ) {
+			if ( array_key_exists( 'label', $geocoder ) && empty( $plugin_settings[ $geocoder['name'] ] ) ) {
 				continue;
 			}
 
