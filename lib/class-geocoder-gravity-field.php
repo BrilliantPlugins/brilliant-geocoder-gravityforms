@@ -1,13 +1,21 @@
 <?php
 
-// https://www.gravityhelp.com/documentation/article/gf_field/
-
 if(!class_exists('GFForms')){
 	die();
 }
 
+/**
+ * This class provides a geocoder field for GravityForms. It is extensible so that it can support
+ * various geocoding services. It defaults to OSM Nomination out of the box, but comes with
+ * Google Maps API, Geocod.io and can easily be extended to support other services.
+ */
 class GF_Field_Geocoder extends GF_Field {
 
+    /**
+     * What kind of field is this?
+     *
+     * @var $type
+     */
 	public $type = 'geocoder';
 
     /**
@@ -17,6 +25,10 @@ class GF_Field_Geocoder extends GF_Field {
      */
     static $fields_already_printed = array();
 
+	/**
+	 * Start this up!
+	 * @param array $data Not sure, we just pass it up to the parent field.
+	 */
 	public function __construct( $data = array() ){
 		parent::__construct( $data );
 		if ( !empty( $data ) ) {
@@ -24,17 +36,26 @@ class GF_Field_Geocoder extends GF_Field {
 		}
 	}
 
+	/**
+	 * Get the title for the field type.
+	 */
 	public function get_form_editor_field_title() {
 		return esc_attr__( 'Geocoder', 'gravityforms' );
 	}
 
+	/**
+	 * Get the placement and label for the field button.
+	 */
 	public function get_form_editor_button() {
 		return array(
 			'group' => 'advanced_fields',
-			'text' => 'Geocoder'
+			'text' => esc_html__( 'Geocoder', 'gravityforms' ),
 		);
 	}
 
+	/**
+	 * Get the list of supported settings for this field type.
+	 */
 	public function get_form_editor_field_settings() {
 		return array(
 			'conditional_logic_field_setting',
@@ -45,17 +66,26 @@ class GF_Field_Geocoder extends GF_Field {
 			'admin_label_setting',
 			'size_setting',
 			'rules_setting',
-			'visibility_setting',
 			'default_value_setting',
 			'css_class_setting',
 			'geocoding_setting',
 		);	
 	}
 
+	/**
+	 * Does what it says on the label.
+	 */
 	public function is_conditional_logic_supported() {
 		return true;
 	}
 
+	/**
+	 * Get the field html.
+	 *
+	 * @param object $form The current form.
+	 * @param string $value The current value of the field.
+	 * @param array $entry The current entry.
+	 */
     public function get_field_input( $form, $value = '', $entry = null ) {
         $form_id         = absint( $form['id'] );
         $is_entry_detail = $this->is_entry_detail();
@@ -82,10 +112,22 @@ class GF_Field_Geocoder extends GF_Field {
         return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
     }
 
+	/**
+	 * Is the submitted field valid? 
+	 *
+	 * @param string $value The value.
+	 * @param object $form The current form.
+	 */
 	public function validate( $value, $form ) {
 		return WP_GeoUtil::is_geojson( $value );	
 	}
 
+	/**
+	 * Get the advanced settings.
+	 *
+	 * @param int $position Where should it appear on the page.
+	 * @param int $form_id Which form is it for.
+	 */
 	public function gform_field_advanced_settings( $position, $form_id ) {
 
 		if ( $position === 50 ) {
@@ -124,6 +166,11 @@ class GF_Field_Geocoder extends GF_Field {
 		}
 	}
 
+	/**
+	 * Get the custom non-static JS that we need to do the geocoding. Probably mostly API keys and such.
+	 *
+	 * @param object $form The current form object.
+	 */
 	public function get_form_inline_script_on_page_render( $form ) {
 		$geocoders = $this->get_geocoder_field_mapping();
 		$gfg = Geocoder_for_Gravity::get_instance();
@@ -161,15 +208,20 @@ class GF_Field_Geocoder extends GF_Field {
 		return $script;
 	}
 
+	/**
+	 * Get a list of geocoders.
+	 */
 	public function get_form_editor_inline_script_on_page_render() {
 		$someJS = parent::get_form_editor_inline_script_on_page_render();
-
 
 		$geocoders = $this->get_geocoder_field_mapping();
 		$someJS .= 'window.gfg_geocoders = ' . json_encode( $geocoders ) . ';';
 		return $someJS;
 	}
 
+	/**
+	 * Get the geocoder labels and field names.
+	 */
 	public function get_geocoder_field_mapping() {
 
 		$geocoders = array(
@@ -192,6 +244,20 @@ class GF_Field_Geocoder extends GF_Field {
 		return $geocoders;
 	}
 
+	/**
+	 * Format the value for use in a merge task.
+	 *
+	 * @param object $value Don't know. We just ignore all the parameters anyways.
+	 * @param object $input_id Don't know. We just ignore all the parameters anyways.
+	 * @param object $entry Don't know. We just ignore all the parameters anyways.
+	 * @param object $form Don't know. We just ignore all the parameters anyways.
+	 * @param object $modifier Don't know. We just ignore all the parameters anyways.
+	 * @param object $raw_value Don't know. We just ignore all the parameters anyways.
+	 * @param object $url_encode Don't know. We just ignore all the parameters anyways.
+	 * @param object $esc_html Don't know. We just ignore all the parameters anyways.
+	 * @param object $format Don't know. We just ignore all the parameters anyways.
+	 * @param object $nl2br  Don't know. We just ignore all the parameters anyways.
+	 */
 	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
 		/*
 		 * This is a dumb hack.
@@ -205,4 +271,5 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 }
 
+// Let's do this!
 GF_Fields::register( new GF_Field_Geocoder() );

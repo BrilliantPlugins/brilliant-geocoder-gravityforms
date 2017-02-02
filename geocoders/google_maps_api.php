@@ -37,7 +37,7 @@ function gfg_gmapi_keys( $keys, $geocoding_engine, $form ) {
 
 	// Since the geocodio engine is in use, enqueue the file
 	$base_url = plugins_url( '', dirname( __FILE__ ) );
-	wp_enqueue_script( 'geocoder_geocodio', $base_url . '/geocoders/geocoder_google_maps_api.js', array( 'gfg_geocode' ), filemtime( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'geocoder_google_maps_api.js' ) );
+	wp_enqueue_script( 'geocoder_geocodio', $base_url . '/geocoders/google_maps_api.js', array( 'gfg_geocode' ), filemtime( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'google_maps_api.js' ) );
 
 	$gfg = Geocoder_for_Gravity::get_instance();
 	$settings = $gfg->get_plugin_settings();

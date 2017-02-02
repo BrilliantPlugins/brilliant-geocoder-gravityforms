@@ -1,7 +1,25 @@
-window.gfg_geocoder_engines = window.gfg_geocoder_engines || {};
-
+/**
+ * Set up the Geocod.io geocoder API call
+ *
+ * @param dict args All of the arguments that are going to get sent to Geocod.io.
+ * @param string result_field The ID of the field where the results need to be sent. 
+ */
 window.gfg_geocoder_engines.geocodio = function( args, results_field ) {
+
+	/**
+	 * A geocoder engine should make an API call and return a promise. 
+	 *
+	 * Here we turn the args dictionary into a query string and fetch the URL.
+	 * 
+	 * We return jQuery.get(), which will be a promise. 
+	 */
 	return jQuery.get('https://api.geocod.io/v1/geocode?' + jQuery.param( args ), function( success ) {
+
+		/**
+		 * Our success handler needs to turn a successful geocode result into GeoJSON.
+		 *
+		 * This will allow results to be used on maps, and to be stored with WP-GeoMeta.
+		 */
 
 		var geojson = '';
 
@@ -28,8 +46,9 @@ window.gfg_geocoder_engines.geocodio = function( args, results_field ) {
 		if ( geojson === '' ) {
 			jQuery('#' + results_field ).val('');
 		} else {
+
+			// Finally, the geojson should be stringified and the results_field value set.
 			jQuery('#' + results_field ).val( JSON.stringify( geojson ) );
 		}
-
 	});
 };

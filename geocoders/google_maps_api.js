@@ -1,6 +1,6 @@
-window.gfg_geocoder_engines = window.gfg_geocoder_engines || {};
-
 window.gfg_geocoder_engines.google_maps_api = function( args, results_field ) {
+
+	// Make an API call and return a promise.
 	return jQuery.get('https://maps.googleapis.com/maps/api/geocode/json?' + jQuery.param( args ), function( success ) {
 
 		if ( success.status !== 'OK' ) {
@@ -13,6 +13,7 @@ window.gfg_geocoder_engines.google_maps_api = function( args, results_field ) {
 		if ( success.results.length > 0 ) {
 			var res = success.results[0];
 
+			// Build a GeoJSON object.
 			geojson = {
 				'type': 'Feature',
 
@@ -35,6 +36,8 @@ window.gfg_geocoder_engines.google_maps_api = function( args, results_field ) {
 		if ( geojson === '' ) {
 			jQuery('#' + results_field ).val('');
 		} else {
+
+			// Set the result
 			jQuery('#' + results_field ).val( JSON.stringify( geojson ) );
 		}
 	});

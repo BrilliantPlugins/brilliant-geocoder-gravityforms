@@ -1,3 +1,6 @@
+/**
+ * On the admin page, each time a geocoder field is edited, set up the mapping for it.
+ */
 jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 
 	if ( 'geocoder' !== field.type ) {
