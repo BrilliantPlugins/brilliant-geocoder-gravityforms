@@ -11,6 +11,7 @@ Features
  * Geocoder for Gravity Forms supports multiple geocoding services and new services can be added easily. 
  * Results are returned as GeoJSON
  * Includes WP-GeoMeta - Posts and users created with GravityForms can store real spatial data which can then be queried with real spatial query functions.
+ * Default Geocoder doesn't even need an API key!
 
 TODO
 ----
