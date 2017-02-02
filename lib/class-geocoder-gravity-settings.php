@@ -28,19 +28,10 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 	public function init(){
 		parent::init();
-		add_action('gform_field_standard_settings', array($this, 'add_field_settings'), 10, 2);
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
 		add_filter( 'gform_form_settings', array( $this, 'gform_form_settings' ), 10, 2 );
 		add_filter( 'gform_pre_form_settings_save', array( $this, 'gform_pre_form_settings_save' ) );
-	}
-
-	public function add_field_settings( $position, $form_id ) {
-
-		if ( 0 === $position ) {
-			$html = '<li class="field setting">Geocoder Settings</li>';
-			print $html;
-		}
 	}
 
 	public function get_geocoders() {

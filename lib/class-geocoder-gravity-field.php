@@ -116,7 +116,7 @@ class GF_Field_Geocoder extends GF_Field {
 				return ;
 			}
 
-			print '<p>';
+			print '<p class="geocoding_setting field_setting">';
 			print 'The default value, if set, should be a valid GeoJSON string. Probably a point.';
 			print '</p>';
 
@@ -191,8 +191,18 @@ class GF_Field_Geocoder extends GF_Field {
 
 		return $geocoders;
 	}
-}
 
-// GetRuleFields
+	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
+		/*
+		 * This is a dumb hack.
+		 * gravityforms/common.php:4801 escapes square brackets for all types except html, section and signature.
+		 * So...we pretend we're just an html field.
+		 *
+		 * This will never come back to bite us, right?
+		 */
+		$this->type = 'html';
+		return $value;
+	}
+}
 
 GF_Fields::register( new GF_Field_Geocoder() );
