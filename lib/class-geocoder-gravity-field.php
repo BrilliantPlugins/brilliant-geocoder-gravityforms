@@ -11,19 +11,19 @@ if(!class_exists('GFForms')){
  */
 class GF_Field_Geocoder extends GF_Field {
 
-    /**
-     * What kind of field is this?
-     *
-     * @var $type
-     */
+	/**
+	 * What kind of field is this?
+	 *
+	 * @var $type
+	 */
 	public $type = 'geocoder';
 
-    /**
-     * We only want to print our field once.
-     *
-     * @var $fields_already_printed
-     */
-    static $fields_already_printed = array();
+	/**
+	 * We only want to print our field once.
+	 *
+	 * @var $fields_already_printed
+	 */
+	static $fields_already_printed = array();
 
 	/**
 	 * Start this up!
@@ -33,6 +33,8 @@ class GF_Field_Geocoder extends GF_Field {
 		parent::__construct( $data );
 		if ( !empty( $data ) ) {
 			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
+			add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
+			add_filter( 'gform_get_input_value', array( $this, 'gform_get_input_value', ), 10, 4 );
 		}
 	}
 
@@ -86,31 +88,31 @@ class GF_Field_Geocoder extends GF_Field {
 	 * @param string $value The current value of the field.
 	 * @param array $entry The current entry.
 	 */
-    public function get_field_input( $form, $value = '', $entry = null ) {
-        $form_id         = absint( $form['id'] );
-        $is_entry_detail = $this->is_entry_detail();
-        $is_form_editor  = $this->is_form_editor();
+	public function get_field_input( $form, $value = '', $entry = null ) {
+		$form_id         = absint( $form['id'] );
+		$is_entry_detail = $this->is_entry_detail();
+		$is_form_editor  = $this->is_form_editor();
 
-        $logic_event = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
-        $id          = (int) $this->id;
-        $field_id    = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
+		$logic_event = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
+		$id          = (int) $this->id;
+		$field_id    = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
 
-        $value        = esc_attr( $value );
-        $size         = $this->size;
-        $class_suffix = $is_entry_detail ? '_admin' : '';
-        $class        = $size . $class_suffix;
+		$value        = esc_attr( $value );
+		$size         = $this->size;
+		$class_suffix = $is_entry_detail ? '_admin' : '';
+		$class        = $size . $class_suffix;
 
-        $max_length = is_numeric( $this->maxLength ) ? "maxlength='{$this->maxLength}'" : '';
+		$max_length = is_numeric( $this->maxLength ) ? "maxlength='{$this->maxLength}'" : '';
 
-        $tabindex              = $this->get_tabindex();
-        $disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
-        $required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
-        $invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
+		$tabindex              = $this->get_tabindex();
+		$disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
+		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
+		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
 
-        $input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
+		$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
 
-        return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
-    }
+		return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
+	}
 
 	/**
 	 * Is the submitted field valid? 
@@ -143,8 +145,8 @@ class GF_Field_Geocoder extends GF_Field {
 			print '<table class="default_input_values" id="">';
 
 			print '<thead><tr>';
-				print '<td><strong>Field</strong></td>';
-				print '<td><strong>Source Field</strong></td>';
+			print '<td><strong>Field</strong></td>';
+			print '<td><strong>Source Field</strong></td>';
 			print '</tr></thead><tbody>';
 
 			print '</tbody></table>';
@@ -245,29 +247,87 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	/**
-	 * Format the value for use in a merge task.
+	 * Un-escape whatever GF does to most text fields.
 	 *
-	 * @param object $value Don't know. We just ignore all the parameters anyways.
-	 * @param object $input_id Don't know. We just ignore all the parameters anyways.
-	 * @param object $entry Don't know. We just ignore all the parameters anyways.
-	 * @param object $form Don't know. We just ignore all the parameters anyways.
-	 * @param object $modifier Don't know. We just ignore all the parameters anyways.
-	 * @param object $raw_value Don't know. We just ignore all the parameters anyways.
-	 * @param object $url_encode Don't know. We just ignore all the parameters anyways.
-	 * @param object $esc_html Don't know. We just ignore all the parameters anyways.
-	 * @param object $format Don't know. We just ignore all the parameters anyways.
-	 * @param object $nl2br  Don't know. We just ignore all the parameters anyways.
+	 * @param string $value The modified value.
+	 * @param string $merge_tag The merge tag it thinks we're merging.
+	 * @param string $modifier Don't know.
+	 * @param object $field The current field.
+	 * @param string $raw_value The original raw value.
+	 *
+	 * If the $merge_tag is a string equal to the ID of the current field, then 
+	 * it's the original save event and we should return the raw value. Otherwise, 
+	 * we actually are in a merge_tag, and we should return the $value, which will
+	 * already have gone through get_value_entry_detail and gotten cleaned up.
 	 */
-	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
-		/*
-		 * This is a dumb hack.
-		 * gravityforms/common.php:4801 escapes square brackets for all types except html, section and signature.
-		 * So...we pretend we're just an html field.
-		 *
-		 * This will never come back to bite us, right?
-		 */
-		$this->type = 'html';
+	public function gform_merge_tag_filter( $value, $merge_tag, $modifier, $field, $raw_value ) {
+		if ( 'geocoder' === $field->type ) {
+			if ( (string)$field->id === $merge_tag) { // A merge tag of "1" means it's the original save event
+				return $raw_value;
+			} else {
+				return $value;
+			}
+		}
+
 		return $value;
+	}
+
+	/**
+	 * This function modifies a value before its used in emails, etc.
+	 *
+	 * We're going to print a web map in certain circumstances, but flat coords for 
+	 * emails and print.
+	 *
+	 * @param string $value The submitted value.
+	 * @param string $currency Waht kind of currency.
+	 * @param bool $use_text Should this use text.
+	 * @param string $format Whats the expected output format.
+	 * @param string $media What's the output media.
+	 */
+	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
+		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
+			return '<div>Make a Map Here</div>';
+		} 
+
+		return $this->make_human_readable_cords( $value );
+	}
+
+	/**
+	 * This function formats a value for use in the entries table list.
+	 *
+	 * @param string $value The metavalue.
+	 * @param array $entry The whole entry.
+	 * @param object $field The field object.
+	 * @param integer $input_id The field's input ID.
+	 */
+	public function gform_get_input_value( $value, $entry, $field, $input_id ) {
+		if ( 'geocoder' === $field->type ) {
+			return $this->make_human_readable_cords( $value );
+		}
+		return $value;
+	}
+
+	/**
+	 * Format GeoJSON for human consumption. Since this is geocoding, we're going to assume 
+	 * we're dealing with a point coordinate. 
+	 *
+	 * @param string $value A value, probably GeoJSON. 
+	 *
+	 * Returns the value as-is if it's not parsable as a point.
+	 */
+	public function make_human_readable_cords( $value ) {
+		if ( WP_GeoUtil::is_geojson( $value, true ) ) {
+				$json = json_decode( $value, true );
+				$geom = $json['geometry'];
+				if ( 'Point' !== $geom['type'] ) {
+					return $value;
+				}
+
+				return implode( ', ', array_reverse( $geom['coordinates'] ) );
+
+		} else {
+			return $value;
+		}
 	}
 }
 

@@ -18,3 +18,4 @@ TODO
 
  * Make setting for form output Optional Map, text area or hidden 
  * Make admin/entry view show a map and GeoJSON
+ * Reverse geocoding (map point to address/etc)
