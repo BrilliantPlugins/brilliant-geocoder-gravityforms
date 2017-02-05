@@ -122,8 +122,30 @@ class GF_Field_Geocoder extends GF_Field {
 		if ( $is_entry_detail ) {
 			$leaflet = new leafletphp();
 			$leaflet->add_layer('L.geoJSON', array( json_decode( html_entity_decode( $value ) ) ), 'editthis' );
+			$leaflet->add_control('L.Control.Draw',array(
+				'draw' => array(
+					'polyline' => false,
+					'polygon' => false,
+					'circle' => false,
+					'rectangle' => false,
+					'marker' => false,
+					),
+				'edit' => array(
+					'featureGroup' => '@@@editthis@@@',
+					'remove' => false,
+					),
+				),'drawControl');
+			$leaflet->add_script( 'map.on( L.Draw.Event.EDITED, function(e){ jQuery("#input_' . $id . '").val( JSON.stringify( editthis.toGeoJSON() ) ); });');
+
+			$leaflet->add_script( 'jQuery("#input_' . $id . '").on("change",function(e){ 
+				editthis.clearLayers(); 
+				editthis.addData( JSON.parse(e.target.value) );});' 
+				);
+
+				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
+
 			$input = $leaflet->get_html();
-			$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults textarea {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
+			$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
 		} else {
 			$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
 		}
@@ -200,19 +222,25 @@ class GF_Field_Geocoder extends GF_Field {
 	 *
 	 * @param object $form The current form object.
 	 */
-	public function get_form_inline_script_on_page_render( $form ) {
+	public function get_form_inline_script_on_page_render( $form, $include_form_id_bit = true ) {
 		$geocoders = $this->get_geocoder_field_mapping();
 		$gfg = Geocoder_for_Gravity::get_instance();
 		$geocoding_engine = $gfg->get_engine_for_geocoder( $form[ 'which_geocoder' ] );
 
 		$fields = $geocoders[ $form['which_geocoder' ] ];
 
-		$my_selector = 'input_' . $this->formId . '_' . $this->id;
+		$form_id_bit = $this->formId . '_';
+
+		if ( !$include_form_id_bit ) {
+			$form_id_bit = '';
+		}
+
+		$my_selector = 'input_' . $form_id_bit . $this->id;
 		$selectors = array();
 		foreach( $fields as $field => $label ) {
 			$key = 'geocoding_mapping_' . $field;
 			if ( !empty( $this->$key ) ) {
-				$selector = 'input_' . $this->formId . '_' . str_replace('.','_',$this->$key);
+				$selector = 'input_' . $form_id_bit . str_replace('.','_',$this->$key);
 				$selectors[ $selector ] = $field;
 			}
 		}
@@ -314,26 +342,7 @@ class GF_Field_Geocoder extends GF_Field {
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
 			$leaflet = new leafletphp();
-			$leaflet->add_layer('L.geoJSON', array( json_decode( $value ) ), 'editthis' );
-			$leaflet->add_control('L.Control.Draw',array(
-				'draw' => array(
-					'polyline' => false,
-					'polygon' => false,
-					'circle' => false,
-					'rectangle' => false,
-					'marker' => false,
-					),
-				'edit' => array(
-					'featureGroup' => '@@@editthis@@@',
-					'remove' => false,
-					),
-				),'drawControl');
-
-			$leaflet->add_script(
-				'map.on( L.Draw.Event.EDITED, function(e){
-					jQuery("textarea.geocoderesults").val( JSON.stringify( editthis.toGeoJSON() )	);
-				});');
-
+			$leaflet->add_layer('L.geoJSON', array( json_decode( $value ) ));
 			$html = $leaflet->get_html();
 			$html .= '<div><textarea class="geocoderesults">' . $value . '</textarea></div>';
 			return $html;

@@ -2,18 +2,20 @@
  * Set up the Geocod.io geocoder API call
  *
  * @param dict args All of the arguments that are going to get sent to Geocod.io.
- * @param string result_field The ID of the field where the results need to be sent. 
+ * @param func success_callback Function to pass geojson to.
+ * @param func failure_callback Function to pass anything else to.
+ *
+ * On success you should be able to construct a GeoJSON object and pass it to the success_callback function.
  */
-window.gfg_geocoder_engines.geocodio = function( args, results_field ) {
+window.gfg_geocoder_engines.geocodio = function( args, success_callback, failure_callback) {
 
 	/**
-	 * A geocoder engine should make an API call and return a promise. 
+	 * A geocoder engine should make an API call and call the appropriate callback function, 
+	 * either the success callback, or the failure callback.
 	 *
 	 * Here we turn the args dictionary into a query string and fetch the URL.
-	 * 
-	 * We return jQuery.get(), which will be a promise. 
 	 */
-	return jQuery.get('https://api.geocod.io/v1/geocode?' + jQuery.param( args ), function( success ) {
+	jQuery.get('https://api.geocod.io/v1/geocode?' + jQuery.param( args ), function( success ) {
 
 		/**
 		 * Our success handler needs to turn a successful geocode result into GeoJSON.
@@ -44,11 +46,9 @@ window.gfg_geocoder_engines.geocodio = function( args, results_field ) {
 		}
 
 		if ( geojson === '' ) {
-			jQuery('#' + results_field ).val('');
+			failure_callback( success );
 		} else {
-
-			// Finally, the geojson should be stringified and the results_field value set.
-			jQuery('#' + results_field ).val( JSON.stringify( geojson ) );
+			success_callback( geojson );
 		}
 	});
 };

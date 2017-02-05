@@ -1,10 +1,10 @@
-window.gfg_geocoder_engines.google_maps_api = function( args, results_field ) {
+window.gfg_geocoder_engines.google_maps_api = function( args, success_callback, failure_callback ) {
 
-	// Make an API call and return a promise.
-	return jQuery.get('https://maps.googleapis.com/maps/api/geocode/json?' + jQuery.param( args ), function( success ) {
+	// Make an API call and call the appropriate callback function.
+	jQuery.get('https://maps.googleapis.com/maps/api/geocode/json?' + jQuery.param( args ), function( success ) {
 
 		if ( success.status !== 'OK' ) {
-			jQuery('#' + results_field ).val('');
+			failure_callback( success );
 			return;
 		} 
 
@@ -34,11 +34,9 @@ window.gfg_geocoder_engines.google_maps_api = function( args, results_field ) {
 		}
 
 		if ( geojson === '' ) {
-			jQuery('#' + results_field ).val('');
+			failure_callback( success );
 		} else {
-
-			// Set the result
-			jQuery('#' + results_field ).val( JSON.stringify( geojson ) );
+			success_callback( success );
 		}
 	});
 };

@@ -6,9 +6,21 @@ function gfg_update_geocoder( e ) {
 
 	// A failure handler. It just clears the field.
 	gfg_update_geocoder.handle_failure = gfg_update_geocoder.handle_failure || function( failure ){
-		console.log( failure );
-		jQuery('#' + results_field ).val('');
+		jQuery('#' + target_geocode_field).val('');
 	};
+
+	// A success handler. It sets the field
+	gfg_update_geocoder.handle_success = gfg_update_geocoder.handle_success || function( success ){
+		
+		if ( typeof success !== 'string' ) {
+			success = JSON.stringify( success );
+		}
+
+		jQuery('#' + target_geocode_field).val(success);
+		jQuery('#' + target_geocode_field).trigger('change');
+	};
+
+
 
 	// Find out which geocoders need to be re-populated. 
 	// More than one geocoder might depend on the same input field, maybe.
@@ -41,19 +53,13 @@ function gfg_update_geocoder( e ) {
 			args = jQuery.extend( args, gfg_geocoder_keys[ curgc.engine ] );
 		}
 
-		// Get a promise back (hopefully!)
-		res = gfg_geocoder_engines[curgc.engine]( args, target_geocode_field );
-
-		// Set up a failure handler
-		if (typeof value === 'object' && typeof value.fail === 'function') {
-			res.fail( gfg_update_geocoder.handle_failure );
-		}
+		gfg_geocoder_engines[curgc.engine]( args, gfg_update_geocoder.handle_success, gfg_update_geocoder.handle_failure );
 	}
 }
 
 // These are the functions that call the geocoders and process responses
 window.gfg_geocoder_engines = {
-	'nomination' : function( args, results_field ) {
+	'nomination' : function( args, success_callback, failure_callback ) {
 
 		// Nomination doesn't like newlines in the query
 		if ( typeof args.q !== undefined ) {
@@ -65,7 +71,7 @@ window.gfg_geocoder_engines = {
 		 *
 		 * Also, return the jQuery.get() result, which will be a deferred/promise.
 		 */
-		return jQuery.get('https://nominatim.openstreetmap.org/search?' + jQuery.param( args ), function( success ){
+		jQuery.get('https://nominatim.openstreetmap.org/search?' + jQuery.param( args ), function( success ){
 
 			var geojson = '';
 
@@ -97,10 +103,9 @@ window.gfg_geocoder_engines = {
 			};
 
 			if ( geojson === '' ) {
-				jQuery('#' + results_field ).val('');
+				failure_callback( success );
 			} else {
-				// Set the result
-				jQuery('#' + results_field ).val( JSON.stringify( geojson ) );
+				success_callback( geojson );
 			}
 		});
 	}
