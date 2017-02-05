@@ -23,7 +23,11 @@ class GF_Field_Geocoder extends GF_Field {
 	 *
 	 * @var $fields_already_printed
 	 */
-	static $fields_already_printed = array();
+	static $fields_already_printed = array(
+		'standard' => array(),
+		'appearance' => array(),
+		'advanced' => array()
+		);
 
 	/**
 	 * Start this up!
@@ -33,8 +37,10 @@ class GF_Field_Geocoder extends GF_Field {
 		parent::__construct( $data );
 		if ( !empty( $data ) ) {
 			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
+			add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
 			add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
-			add_filter( 'gform_get_input_value', array( $this, 'gform_get_input_value', ), 10, 4 );
+			// add_filter( 'gform_get_input_value', array( $this, 'gform_get_input_value', ), 10, 4 );
+			add_filter( 'gform_entries_field_value', array( $this, 'gform_entries_field_value' ), 10, 3 );
 		}
 	}
 
@@ -109,7 +115,18 @@ class GF_Field_Geocoder extends GF_Field {
 		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
 		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
 
-		$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
+		$is_form_editor  = $this->is_form_editor();
+
+		$is_entry_detail = $this->is_entry_detail();
+
+		if ( $is_entry_detail ) {
+			$leaflet = new leafletphp();
+			$leaflet->add_layer('L.geoJSON', array( json_decode( html_entity_decode( $value ) ) ), 'editthis' );
+			$input = $leaflet->get_html();
+			$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults textarea {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
+		} else {
+			$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
+		}
 
 		return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
 	}
@@ -125,15 +142,15 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	/**
-	 * Get the advanced settings.
+	 * Get the standard settings.
 	 *
 	 * @param int $position Where should it appear on the page.
 	 * @param int $form_id Which form is it for.
 	 */
-	public function gform_field_advanced_settings( $position, $form_id ) {
+	public function gform_field_standard_settings( $position, $form_id ) {
 
 		if ( $position === 50 ) {
-			if ( in_array( '50', GF_Field_Geocoder::$fields_already_printed ) ) {
+			if ( in_array( '50', GF_Field_Geocoder::$fields_already_printed['standard'] ) ) {
 				return ;
 			}
 
@@ -152,11 +169,21 @@ class GF_Field_Geocoder extends GF_Field {
 			print '</tbody></table>';
 			print '</li>';
 
-			GF_Field_Geocoder::$fields_already_printed[] = 50;
+			GF_Field_Geocoder::$fields_already_printed['standard'][] = 50;
+		}
+	}
 
-		} else if ( $position === 150 ) {
+	/**
+	 * Get the advanced settings.
+	 *
+	 * @param int $position Where should it appear on the page.
+	 * @param int $form_id Which form is it for.
+	 */
+	public function gform_field_advanced_settings( $position, $form_id ) {
 
-			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed ) ) {
+	if ( $position === 150 ) {
+
+			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed['advanced'] ) ) {
 				return ;
 			}
 
@@ -164,7 +191,7 @@ class GF_Field_Geocoder extends GF_Field {
 			print 'The default value, if set, should be a valid GeoJSON string. Probably a point.';
 			print '</p>';
 
-			GF_Field_Geocoder::$fields_already_printed[] = 150;
+			GF_Field_Geocoder::$fields_already_printed['advanced'][] = 150;
 		}
 	}
 
@@ -286,7 +313,30 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
-			return '<div>Make a Map Here</div>';
+			$leaflet = new leafletphp();
+			$leaflet->add_layer('L.geoJSON', array( json_decode( $value ) ), 'editthis' );
+			$leaflet->add_control('L.Control.Draw',array(
+				'draw' => array(
+					'polyline' => false,
+					'polygon' => false,
+					'circle' => false,
+					'rectangle' => false,
+					'marker' => false,
+					),
+				'edit' => array(
+					'featureGroup' => '@@@editthis@@@',
+					'remove' => false,
+					),
+				),'drawControl');
+
+			$leaflet->add_script(
+				'map.on( L.Draw.Event.EDITED, function(e){
+					jQuery("textarea.geocoderesults").val( JSON.stringify( editthis.toGeoJSON() )	);
+				});');
+
+			$html = $leaflet->get_html();
+			$html .= '<div><textarea class="geocoderesults">' . $value . '</textarea></div>';
+			return $html;
 		} 
 
 		return $this->make_human_readable_cords( $value );
@@ -300,9 +350,20 @@ class GF_Field_Geocoder extends GF_Field {
 	 * @param object $field The field object.
 	 * @param integer $input_id The field's input ID.
 	 */
+	/*
 	public function gform_get_input_value( $value, $entry, $field, $input_id ) {
 		if ( 'geocoder' === $field->type ) {
 			return $this->make_human_readable_cords( $value );
+		}
+		return $value;
+	}
+	 */
+	public function gform_entries_field_value( $value, $form_id, $field_id ){
+		$form         = GFAPI::get_form( $form_id );
+		$field        = RGFormsModel::get_field( $form, $field_id );
+
+		if ( $field->type == 'geocoder' ) {
+			return $this->make_human_readable_cords( html_entity_decode( $value ) );
 		}
 		return $value;
 	}

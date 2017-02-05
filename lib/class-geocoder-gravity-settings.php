@@ -170,7 +170,8 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 * Enqueue scripts on the editor pages.
 	 */
 	public function admin_enqueue_scripts() {
-		if ( GFForms::get_page() === 'form_editor' ) {
+		$page = GFForms::get_page();
+		if ( 'form_editor' === $page || 'entry_detail' === $page ) {
 			$base_url = plugins_url( '', dirname( __FILE__ ) );
 			wp_enqueue_script( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.js', array( 'jquery' ), $this->_version );
 			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array( ), $this->_version );

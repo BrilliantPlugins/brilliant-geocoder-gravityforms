@@ -15,6 +15,7 @@ Copyright 2016, Cimbura.com
 require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
 require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
 require_once( __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php' );
+require_once( __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php' );
 
 require_once( __DIR__ . '/geocoders/geocodio.php' );
 require_once( __DIR__ . '/geocoders/google_maps_api.php' );

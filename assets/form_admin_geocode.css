@@ -5,3 +5,8 @@
 .geocoding_setting .gfield_rule_select option:first-child {
 	font-style: italic;
 }
+
+textarea.geocoderesults {
+	width: 100%;
+	min-height: 80px;
+}
