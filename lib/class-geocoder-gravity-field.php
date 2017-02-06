@@ -27,7 +27,7 @@ class GF_Field_Geocoder extends GF_Field {
 		'standard' => array(),
 		'appearance' => array(),
 		'advanced' => array()
-		);
+	);
 
 	/**
 	 * Start this up!
@@ -36,10 +36,10 @@ class GF_Field_Geocoder extends GF_Field {
 	public function __construct( $data = array() ){
 		parent::__construct( $data );
 		if ( !empty( $data ) ) {
-			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
 			add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
+			add_action( 'gform_field_appearance_settings', array( $this, 'gform_field_appearance_settings' ), 10, 2 );
+			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
 			add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
-			// add_filter( 'gform_get_input_value', array( $this, 'gform_get_input_value', ), 10, 4 );
 			add_filter( 'gform_entries_field_value', array( $this, 'gform_entries_field_value' ), 10, 3 );
 		}
 	}
@@ -77,6 +77,8 @@ class GF_Field_Geocoder extends GF_Field {
 			'default_value_setting',
 			'css_class_setting',
 			'geocoding_setting',
+			'visibility_setting',
+			'description_setting',
 		);	
 	}
 
@@ -129,12 +131,12 @@ class GF_Field_Geocoder extends GF_Field {
 					'circle' => false,
 					'rectangle' => false,
 					'marker' => false,
-					),
+				),
 				'edit' => array(
 					'featureGroup' => '@@@editthis@@@',
 					'remove' => false,
-					),
-				),'drawControl');
+				),
+			),'drawControl');
 			$leaflet->add_script( 'map.on( L.Draw.Event.EDITED, function(e){ jQuery("#input_' . $id . '").val( JSON.stringify( editthis.toGeoJSON() ) ); });');
 
 			$leaflet->add_script( 'jQuery("#input_' . $id . '").on("change",function(e){ 
@@ -144,8 +146,8 @@ class GF_Field_Geocoder extends GF_Field {
 
 				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
 
-			$input = $leaflet->get_html();
-			$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
+				$input = $leaflet->get_html();
+				$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
 		} else {
 			$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
 		}
@@ -179,7 +181,7 @@ class GF_Field_Geocoder extends GF_Field {
 			$form = GFAPI::get_form( $form_id );
 
 			print '<li class="geocoding_setting field_setting">';
-			print '<label for="field_admin_label">Geocoding Source Fields</label>';
+			print '<label class="section_label" for="field_admin_label">Geocoding Source Fields</label>';
 			print '<p>Configure the mapping for the <em>' . $form['which_geocoder'] . '</em> eocoding service.</p>';
 			print '<table class="default_input_values" id="">';
 
@@ -196,6 +198,37 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	/**
+	 * Get the appearance settings.
+	 *
+	 * @param int $position Where should it appear on the page.
+	 * @param int $form_id Which form is it for.
+	 */
+	public function gform_field_appearance_settings( $position, $form_id ) {
+
+		if ( $position === 150 ) {
+
+			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed['appearance'] ) ) {
+				return ;
+			}
+
+			$form = GFAPI::get_form( $form_id );
+
+			$this;
+
+			print '<li class="geocoding_setting field_setting">';
+			print '<label class="section_label">Display Type</label>';
+			print '<p>' . esc_html__('Uncheck all to make this field hidden.') . '</p>';
+
+			print '<label for="geocoder_appearance_map"><input id="geocoder_appearance_map" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_map\',this.checked);" name="geocoder_appearance_map" value="map"> ' . esc_html__('Map') . '</label>';
+			print '<label for="geocoder_appearance_geojson"><input id="geocoder_appearance_geojson" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_geojson\',this.checked);" name="geocoder_appearance_geojson" value="geojson"> ' . esc_html__('GeoJSON Textarea') . '</label>';
+			print '<label for="geocoder_appearance_latlng"><input id="geocoder_appearance_latlng" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_latlng\',this.checked);" name="geocoder_appearance_latlng" value="latlng"> ' . esc_html__('Latitude and Longitude Fields') . '</label>';
+			print '</li>';
+
+			GF_Field_Geocoder::$fields_already_printed['appearance'][] = 150;
+		}
+	}
+
+	/**
 	 * Get the advanced settings.
 	 *
 	 * @param int $position Where should it appear on the page.
@@ -203,7 +236,7 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function gform_field_advanced_settings( $position, $form_id ) {
 
-	if ( $position === 150 ) {
+		if ( $position === 150 ) {
 
 			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed['advanced'] ) ) {
 				return ;
@@ -273,6 +306,11 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$geocoders = $this->get_geocoder_field_mapping();
 		$someJS .= 'window.gfg_geocoders = ' . json_encode( $geocoders ) . ';';
+		$someJS .= "\n" . "jQuery(document).bind('gform_load_field_settings', function(event,field,form){
+			jQuery('#geocoder_appearance_map').prop('checked',(field.geocoder_appearance_map === undefined ? true : field.geocoder_appearance_map));
+			jQuery('#geocoder_appearance_geojson').prop('checked',(field.geocoder_appearance_geojson === undefined ? false : field.geocoder_appearance_geojson));
+			jQuery('#geocoder_appearance_latlng').prop('checked',(field.geocoder_appearance_latlng === undefined ? false : field.geocoder_appearance_latlng));
+		});";
 		return $someJS;
 	}
 
@@ -351,22 +389,6 @@ class GF_Field_Geocoder extends GF_Field {
 		return $this->make_human_readable_cords( $value );
 	}
 
-	/**
-	 * This function formats a value for use in the entries table list.
-	 *
-	 * @param string $value The metavalue.
-	 * @param array $entry The whole entry.
-	 * @param object $field The field object.
-	 * @param integer $input_id The field's input ID.
-	 */
-	/*
-	public function gform_get_input_value( $value, $entry, $field, $input_id ) {
-		if ( 'geocoder' === $field->type ) {
-			return $this->make_human_readable_cords( $value );
-		}
-		return $value;
-	}
-	 */
 	public function gform_entries_field_value( $value, $form_id, $field_id ){
 		$form         = GFAPI::get_form( $form_id );
 		$field        = RGFormsModel::get_field( $form, $field_id );
@@ -387,13 +409,13 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function make_human_readable_cords( $value ) {
 		if ( WP_GeoUtil::is_geojson( $value, true ) ) {
-				$json = json_decode( $value, true );
-				$geom = $json['geometry'];
-				if ( 'Point' !== $geom['type'] ) {
-					return $value;
-				}
+			$json = json_decode( $value, true );
+			$geom = $json['geometry'];
+			if ( 'Point' !== $geom['type'] ) {
+				return $value;
+			}
 
-				return implode( ', ', array_reverse( $geom['coordinates'] ) );
+			return implode( ', ', array_reverse( $geom['coordinates'] ) );
 
 		} else {
 			return $value;
