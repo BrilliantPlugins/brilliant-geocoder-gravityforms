@@ -21,4 +21,5 @@ Future Features
  * GF-wide default geocoder setting
  * Show lat/lng in entry view
  * Prevent map from wrapping sideways
+ * Use draggable markers instead of Leaflet.draw
 
