@@ -1,6 +1,11 @@
 <?php
+/**
+ * This is the geocoder settings file for gravityforms
+ *
+ * @package brilliant-geocoder-gravityforms
+ */
 
-if(!class_exists('GFForms')){
+if ( ! class_exists( 'GFForms' ) ) {
 	die();
 }
 
@@ -63,7 +68,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 * @return object $_instance An instance of this class.
 	 **/
 	public static function get_instance() {
-		if ( self::$_instance == null ) {
+		if ( null === self::$_instance ) {
 			self::$_instance = new self();
 		}
 
@@ -75,7 +80,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 *
 	 * Set up actions and filters.
 	 */
-	public function init(){
+	public function init() {
 		parent::init();
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
@@ -95,7 +100,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 			array(
 				'geocoder' => 'OSM Nomination full address',
 				'geocoder_engine' => 'nomination',
-			)
+			),
 		);
 
 		$geocoders = apply_filters( 'gfg_geocoders', $geocoders );
@@ -110,14 +115,14 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 */
 	public function get_engine_for_geocoder( $in_use_geocoder ) {
 		$geocoders = $this->get_geocoders();
-		foreach( $geocoders as $geocoder ) {
+		foreach ( $geocoders as $geocoder ) {
 
-			if ( !array_key_exists( 'geocoder', $geocoder ) ) {
+			if ( ! array_key_exists( 'geocoder', $geocoder ) ) {
 				continue;
 			}
 
-			if ( $geocoder[ 'geocoder' ] === $in_use_geocoder ) {
-				return $geocoder[ 'geocoder_engine' ];
+			if ( $geocoder['geocoder'] === $in_use_geocoder ) {
+				return $geocoder['geocoder_engine'];
 			}
 		}
 
@@ -132,7 +137,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 		$geocoders = $this->get_geocoders();
 
-		$geocoders = array_filter( $geocoders, function( $g ){
+		$geocoders = array_filter( $geocoders, function( $g ) {
 			return array_key_exists( 'label', $g );
 		});
 
@@ -145,8 +150,8 @@ class Geocoder_for_Gravity extends GFAddOn {
 		$form_def = array(
 			array(
 				'description' => $this->plugin_settings_description(),
-				'fields' => $geocoders
-			)
+				'fields' => $geocoders,
+			),
 		);
 
 		return $form_def;
@@ -174,7 +179,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 		if ( 'form_editor' === $page || 'entry_detail' === $page ) {
 			$base_url = plugins_url( '', dirname( __FILE__ ) );
 			wp_enqueue_script( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.js', array( 'jquery' ), $this->_version );
-			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array( ), $this->_version );
+			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array(), $this->_version );
 		}
 	}
 
@@ -182,7 +187,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 * Enqueue scripts on the regular non-editor pages.
 	 *
 	 * @param object $form The form.
-	 * @param bool $is_ajax Bool if the form is being submitted by ajax.
+	 * @param bool   $is_ajax Bool if the form is being submitted by ajax.
 	 */
 	public function enqueue_scripts( $form = '', $is_ajax = false ) {
 		parent::enqueue_scripts( $form, $is_ajax );
@@ -193,45 +198,45 @@ class Geocoder_for_Gravity extends GFAddOn {
 	/**
 	 * Get the settings to display on a form's individual settings page.
 	 *
-	 * @param array $settings The existing settings.
+	 * @param array  $settings The existing settings.
 	 * @param object $form The current form.
 	 */
 	public function gform_form_settings( $settings, $form ) {
 
-		// Get plugin settings so we can see if we have needed API keys 
+		// Get plugin settings so we can see if we have needed API keys.
 		$plugin_settings = $this->get_plugin_settings();
 
-		// See which geocoder we're using. Default to the OSM Nomination geocoder
+		// See which geocoder we're using. Default to the OSM Nomination geocoder.
 		$selected_geocoder = rgar( $form, 'which_geocoder' );
 		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nomination simple query' : $selected_geocoder );
 
-		// Build up the options
+		// Build up the options.
 		$options = '';
 		$geocoders = $this->get_geocoders();
-		foreach( $geocoders as $geocoder ) {
+		foreach ( $geocoders as $geocoder ) {
 
-			// Check if we have the required keys for the service
+			// Check if we have the required keys for the service.
 			if ( array_key_exists( 'label', $geocoder ) && empty( $plugin_settings[ $geocoder['name'] ] ) ) {
 				continue;
 			}
 
-			if ( !array_key_exists( 'geocoder', $geocoder ) ) {
+			if ( ! array_key_exists( 'geocoder', $geocoder ) ) {
 				continue;
 			}
 
 			$selected = '';
 			if ( $selected_geocoder === $geocoder['geocoder'] ) {
 				$selected = ' selected="selected"';
-			} 
+			}
 
-			$options[$geocoder['geocoder']] = '<option' . $selected . ' value="' . esc_attr( $geocoder['geocoder'] ) . '">' . esc_html( $geocoder['geocoder'] ) . '</option>';
+			$options[ $geocoder['geocoder'] ] = '<option' . $selected . ' value="' . esc_attr( $geocoder['geocoder'] ) . '">' . esc_html( $geocoder['geocoder'] ) . '</option>';
 		}
 
 		ksort( $options );
 
-		// Make the settings string
+		// Make the settings string.
 		$setting = '<tr><th><label for="which_geocoder">Geocoder engine</label></th><td><select name="which_geocoder">';
-		$setting .= implode('',$options);
+		$setting .= implode( '',$options );
 		$setting .= '</select></td></tr>';
 
 		$settings['Geocoder']['which_geocoder'] = $setting;

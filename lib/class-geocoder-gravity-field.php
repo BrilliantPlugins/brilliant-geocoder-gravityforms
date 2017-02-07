@@ -1,6 +1,11 @@
 <?php
+/**
+ * This is the geocoder field for gravityforms
+ *
+ * @package brilliant-geocoder-gravityforms
+ */
 
-if(!class_exists('GFForms')){
+if ( ! class_exists( 'GFForms' ) ) {
 	die();
 }
 
@@ -26,16 +31,17 @@ class GF_Field_Geocoder extends GF_Field {
 	static $fields_already_printed = array(
 		'standard' => array(),
 		'appearance' => array(),
-		'advanced' => array()
+		'advanced' => array(),
 	);
 
 	/**
 	 * Start this up!
+	 *
 	 * @param array $data Not sure, we just pass it up to the parent field.
 	 */
-	public function __construct( $data = array() ){
+	public function __construct( $data = array() ) {
 		parent::__construct( $data );
-		if ( !empty( $data ) ) {
+		if ( ! empty( $data ) ) {
 			add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
 			add_action( 'gform_field_appearance_settings', array( $this, 'gform_field_appearance_settings' ), 10, 2 );
 			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
@@ -79,7 +85,7 @@ class GF_Field_Geocoder extends GF_Field {
 			'geocoding_setting',
 			'visibility_setting',
 			'description_setting',
-		);	
+		);
 	}
 
 	/**
@@ -94,7 +100,7 @@ class GF_Field_Geocoder extends GF_Field {
 	 *
 	 * @param object $form The current form.
 	 * @param string $value The current value of the field.
-	 * @param array $entry The current entry.
+	 * @param array  $entry The current entry.
 	 */
 	public function get_field_input( $form, $value = '', $entry = null ) {
 		$form_id         = absint( $form['id'] );
@@ -103,32 +109,29 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$logic_event = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
 		$id          = (int) $this->id;
-		$field_id    = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
+		$field_id    = $is_entry_detail || $is_form_editor || 0 === $form_id ? "input_$id" : 'input_' . $form_id . "_$id";
 
 		$value        = esc_attr( $value );
 		$size         = $this->size;
 		$class_suffix = $is_entry_detail ? '_admin' : '';
 		$class        = $size . $class_suffix;
 
-		$max_length = is_numeric( $this->maxLength ) ? "maxlength='{$this->maxLength}'" : '';
+		$max_length = is_numeric( $this->maxLength ) ? "maxlength='{$this->maxLength}'" : ''; // @codingStandardsIgnoreLine
 
 		$tabindex              = $this->get_tabindex();
 		$disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
-		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
+		$required_attribute    = $this->isRequired ? 'aria-required="true"' : ''; // @codingStandardsIgnoreLine
 		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
 
-
-		$show_map = ( !isset( $this->geocoder_appearance_map ) ? true : $this->geocoder_appearance_map );
-		$show_geojson = ( !isset( $this->geocoder_appearance_geojson ) ? false : $this->geocoder_appearance_geojson );
-		$show_latlng = ( !isset( $this->geocoder_appearance_latlng ) ? false : $this->geocoder_appearance_latlng );
-
+		$show_map = ( ! isset( $this->geocoder_appearance_map ) ? true : $this->geocoder_appearance_map );
+		$show_geojson = ( ! isset( $this->geocoder_appearance_geojson ) ? false : $this->geocoder_appearance_geojson );
+		$show_latlng = ( ! isset( $this->geocoder_appearance_latlng ) ? false : $this->geocoder_appearance_latlng );
 
 		$show_something = ($show_map || $show_geojson || $show_latlng );
 
 		$input = '';
 
 		$geojson = json_decode( html_entity_decode( $value ), true );
-
 
 		if ( $show_something ) {
 			$classes = array();
@@ -141,16 +144,15 @@ class GF_Field_Geocoder extends GF_Field {
 			if ( $show_latlng ) {
 				$classes[] = 'has_latlng';
 			}
-			$input .= '<div class="ginput_complex ginput_container ' . implode(' ', $classes ) . '">';
+			$input .= '<div class="ginput_complex ginput_container ' . implode( ' ', $classes ) . '">';
 		}
-
 
 		/**
 		 * Display the map, with a Leaflet.draw editor
 		 */
 		if ( $show_map || $is_form_editor || $is_entry_detail ) {
-			$leaflet = new leafletphp(array(), "geocode_map_$field_id" );
-			$leaflet->add_layer('L.geoJSON', array( $geojson ), 'editthis' );
+			$leaflet = new leafletphp( array(), "geocode_map_$field_id" );
+			$leaflet->add_layer( 'L.geoJSON', array( $geojson ), 'editthis' );
 			$leaflet->add_control('L.Control.Draw',array(
 				'draw' => array(
 					'polyline' => false,
@@ -159,7 +161,7 @@ class GF_Field_Geocoder extends GF_Field {
 					'rectangle' => false,
 				),
 				'edit' => array(
-					'featureGroup' => '@@@editthis@@@'
+					'featureGroup' => '@@@editthis@@@',
 				),
 			),'drawControl');
 
@@ -170,7 +172,7 @@ class GF_Field_Geocoder extends GF_Field {
 			if ( $is_form_editor ) {
 
 				$class = '';
-				if ( !$show_map ) {
+				if ( ! $show_map ) {
 					$class = 'hidden';
 				}
 
@@ -182,8 +184,7 @@ class GF_Field_Geocoder extends GF_Field {
 			if ( $is_form_editor ) {
 				$input .= '</div>';
 			}
-
-		} 
+		}
 
 		/**
 		 * Show the GeoJSON text input box
@@ -193,14 +194,14 @@ class GF_Field_Geocoder extends GF_Field {
 			if ( $is_form_editor ) {
 
 				$class = '';
-				if ( !$show_geojson ) {
+				if ( ! $show_geojson ) {
 					$class = 'hidden';
 				}
 
 				$input .= '<div class="geojsondisplay ' . $class . '">';
 			}
 
-			$input .= "<span class='ginput_full'><textarea name='{$field_id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__('Location GeoJSON') . '</label></span>';
+			$input .= "<span class='ginput_full'><textarea name='{$field_id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__( 'Location GeoJSON' ) . '</label></span>';
 
 			if ( $is_form_editor ) {
 				$input .= '</div>';
@@ -209,13 +210,12 @@ class GF_Field_Geocoder extends GF_Field {
 			$input .= "<input name='input_{$id}' id='{$field_id}' type='hidden' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
 		}
 
-		if ( $show_latlng || $is_form_editor || $is_entry_detail) {
-
+		if ( $show_latlng || $is_form_editor || $is_entry_detail ) {
 
 			if ( $is_form_editor ) {
 
 				$class = '';
-				if ( !$show_latlng ) {
+				if ( ! $show_latlng ) {
 					$class = 'hidden';
 				}
 
@@ -230,12 +230,11 @@ class GF_Field_Geocoder extends GF_Field {
 				$lng = '';
 			}
 			$input .= '<span class="ginput_left">';
-			$input .= "<input class='gf_left_half' id='{$field_id}_lat' type='text' value='{$lat}'><label for='{$field_id}_lat'>" . esc_html__('Latitude', 'cimburacom' ) . "</label>";
+			$input .= "<input class='gf_left_half' id='{$field_id}_lat' type='text' value='{$lat}'><label for='{$field_id}_lat'>" . esc_html__( 'Latitude', 'cimburacom' ) . '</label>';
 			$input .= '</span>';
 			$input .= '<span class="ginput_right ginput_container">';
-			$input .= "<input class='gf_right_half' id='{$field_id}_lng' type='text' value='{$lng}'><label for='{$field_id}_lng'>" . esc_html__('Longitude', 'cimburacom' ) . "</label>";
+			$input .= "<input class='gf_right_half' id='{$field_id}_lng' type='text' value='{$lng}'><label for='{$field_id}_lng'>" . esc_html__( 'Longitude', 'cimburacom' ) . '</label>';
 			$input .= '</span>';
-
 
 			if ( $is_form_editor ) {
 				$input .= '</div>';
@@ -243,7 +242,6 @@ class GF_Field_Geocoder extends GF_Field {
 		}
 
 		$input .= "\n" . '<script>jQuery(document).ready(function(){new gfg_sync_data("' . $field_id . '");});</script>';
-
 
 		if ( $show_something ) {
 			$input .= '</div>';
@@ -253,13 +251,13 @@ class GF_Field_Geocoder extends GF_Field {
 	}
 
 	/**
-	 * Is the submitted field valid? 
+	 * Is the submitted field valid?
 	 *
 	 * @param string $value The value.
 	 * @param object $form The current form.
 	 */
 	public function validate( $value, $form ) {
-		return WP_GeoUtil::is_geojson( $value );	
+		return WP_GeoUtil::is_geojson( $value );
 	}
 
 	/**
@@ -270,8 +268,8 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function gform_field_standard_settings( $position, $form_id ) {
 
-		if ( $position === 50 ) {
-			if ( in_array( '50', GF_Field_Geocoder::$fields_already_printed['standard'] ) ) {
+		if ( 50 === $position ) {
+			if ( in_array( 50, GF_Field_Geocoder::$fields_already_printed['standard'], true ) ) {
 				return ;
 			}
 
@@ -279,7 +277,7 @@ class GF_Field_Geocoder extends GF_Field {
 
 			print '<li class="geocoding_setting field_setting">';
 			print '<label class="section_label" for="field_admin_label">Geocoding Source Fields</label>';
-			print '<p>Configure the mapping for the <em>' . $form['which_geocoder'] . '</em> eocoding service.</p>';
+			print '<p>Configure the mapping for the <em>' . esc_html( $form['which_geocoder'] ) . '</em> eocoding service.</p>';
 			print '<table class="default_input_values" id="">';
 
 			print '<thead><tr>';
@@ -302,9 +300,9 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function gform_field_appearance_settings( $position, $form_id ) {
 
-		if ( $position === 150 ) {
+		if ( 150 === $position ) {
 
-			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed['appearance'] ) ) {
+			if ( in_array( 150, GF_Field_Geocoder::$fields_already_printed['appearance'], true ) ) {
 				return ;
 			}
 
@@ -314,11 +312,11 @@ class GF_Field_Geocoder extends GF_Field {
 
 			print '<li class="geocoding_setting field_setting">';
 			print '<label class="section_label">Display Type</label>';
-			print '<p>' . esc_html__('Uncheck all to make this field hidden.') . '</p>';
+			print '<p>' . esc_html__( 'Uncheck all to make this field hidden.' ) . '</p>';
 
-			print '<label for="geocoder_appearance_map"><input id="geocoder_appearance_map" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_map\',this.checked);" name="geocoder_appearance_map" value="map"> ' . esc_html__('Map') . '</label>';
-			print '<label for="geocoder_appearance_geojson"><input id="geocoder_appearance_geojson" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_geojson\',this.checked);" name="geocoder_appearance_geojson" value="geojson"> ' . esc_html__('GeoJSON Textarea') . '</label>';
-			print '<label for="geocoder_appearance_latlng"><input id="geocoder_appearance_latlng" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_latlng\',this.checked);" name="geocoder_appearance_latlng" value="latlng"> ' . esc_html__('Latitude and Longitude Fields') . '</label>';
+			print '<label for="geocoder_appearance_map"><input id="geocoder_appearance_map" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_map\',this.checked);" name="geocoder_appearance_map" value="map"> ' . esc_html__( 'Map' ) . '</label>';
+			print '<label for="geocoder_appearance_geojson"><input id="geocoder_appearance_geojson" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_geojson\',this.checked);" name="geocoder_appearance_geojson" value="geojson"> ' . esc_html__( 'GeoJSON Textarea' ) . '</label>';
+			print '<label for="geocoder_appearance_latlng"><input id="geocoder_appearance_latlng" type="checkbox" onchange="SetFieldProperty(\'geocoder_appearance_latlng\',this.checked);" name="geocoder_appearance_latlng" value="latlng"> ' . esc_html__( 'Latitude and Longitude Fields' ) . '</label>';
 			print '</li>';
 
 			GF_Field_Geocoder::$fields_already_printed['appearance'][] = 150;
@@ -333,9 +331,9 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function gform_field_advanced_settings( $position, $form_id ) {
 
-		if ( $position === 150 ) {
+		if ( 150 === $position ) {
 
-			if ( in_array( '150', GF_Field_Geocoder::$fields_already_printed['advanced'] ) ) {
+			if ( in_array( 150, GF_Field_Geocoder::$fields_already_printed['advanced'],true ) ) {
 				return ;
 			}
 
@@ -351,36 +349,37 @@ class GF_Field_Geocoder extends GF_Field {
 	 * Get the custom non-static JS that we need to do the geocoding. Probably mostly API keys and such.
 	 *
 	 * @param object $form The current form object.
+	 * @param bool   $include_form_id_bit Should we include the form ID in the input_ id. False for admin pages.
 	 */
 	public function get_form_inline_script_on_page_render( $form, $include_form_id_bit = true ) {
 		$geocoders = $this->get_geocoder_field_mapping();
 		$gfg = Geocoder_for_Gravity::get_instance();
-		$geocoding_engine = $gfg->get_engine_for_geocoder( $form[ 'which_geocoder' ] );
+		$geocoding_engine = $gfg->get_engine_for_geocoder( $form['which_geocoder'] );
 
-		$fields = $geocoders[ $form['which_geocoder' ] ];
+		$fields = $geocoders[ $form['which_geocoder'] ];
 
-		$form_id_bit = $this->formId . '_';
+		$form_id_bit = $this->formId . '_'; // @codingStandardsIgnoreLine
 
-		if ( !$include_form_id_bit ) {
+		if ( ! $include_form_id_bit ) {
 			$form_id_bit = '';
 		}
 
 		$my_selector = 'input_' . $form_id_bit . $this->id;
 		$selectors = array();
-		foreach( $fields as $field => $label ) {
+		foreach ( $fields as $field => $label ) {
 			$key = 'geocoding_mapping_' . $field;
-			if ( !empty( $this->$key ) ) {
-				$selector = 'input_' . $form_id_bit . str_replace('.','_',$this->$key);
+			if ( ! empty( $this->$key ) ) {
+				$selector = 'input_' . $form_id_bit . str_replace( '.','_',$this->$key );
 				$selectors[ $selector ] = $field;
 			}
 		}
 
-		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . json_encode( array( 'fields' => $selectors, 'engine' => $geocoding_engine ) ) . ';';
-		$script .= "\n" . 'jQuery("#' . implode(',#', array_keys( $selectors ) ) . '").on("change", gfg_update_geocoder);' . "\n";
+		$script = "\n" . 'gfg_geocodings.' . $my_selector . ' = ' . wp_json_encode( array( 'fields' => $selectors, 'engine' => $geocoding_engine ) ) . ';';
+		$script .= "\n" . 'jQuery("#' . implode( ',#', array_keys( $selectors ) ) . '").on("change", gfg_update_geocoder);' . "\n";
 
 		$extra_keys = array();
 		if ( 'nomination' === $geocoding_engine ) {
-			$extra_keys['email'] = get_bloginfo('admin_email');
+			$extra_keys['email'] = get_bloginfo( 'admin_email' );
 			$extra_keys['format'] = 'jsonv2';
 			$extra_keys['extratags'] = 1;
 			$extra_keys['limit'] = 1;
@@ -388,8 +387,8 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$extra_keys = apply_filters( 'gfg_geocoder_keys', $extra_keys, $geocoding_engine, $form );
 
-		if ( !empty( $extra_keys ) ) {
-			$script .= "\n" . 'gfg_geocoder_keys.' . $geocoding_engine . ' = ' . json_encode( $extra_keys ) . ';';
+		if ( ! empty( $extra_keys ) ) {
+			$script .= "\n" . 'gfg_geocoder_keys.' . $geocoding_engine . ' = ' . wp_json_encode( $extra_keys ) . ';';
 		}
 
 		return $script;
@@ -399,16 +398,16 @@ class GF_Field_Geocoder extends GF_Field {
 	 * Get a list of geocoders.
 	 */
 	public function get_form_editor_inline_script_on_page_render() {
-		$someJS = parent::get_form_editor_inline_script_on_page_render();
+		$some_js = parent::get_form_editor_inline_script_on_page_render();
 
 		$geocoders = $this->get_geocoder_field_mapping();
-		$someJS .= 'window.gfg_geocoders = ' . json_encode( $geocoders ) . ';';
-		$someJS .= "\n" . "jQuery(document).bind('gform_load_field_settings', function(event,field,form){
+		$some_js .= 'window.gfg_geocoders = ' . wp_json_encode( $geocoders ) . ';';
+		$some_js .= "\njQuery(document).bind('gform_load_field_settings', function(event,field,form){
 			jQuery('#geocoder_appearance_map').prop('checked',(field.geocoder_appearance_map === undefined ? true : field.geocoder_appearance_map));
 			jQuery('#geocoder_appearance_geojson').prop('checked',(field.geocoder_appearance_geojson === undefined ? false : field.geocoder_appearance_geojson));
 			jQuery('#geocoder_appearance_latlng').prop('checked',(field.geocoder_appearance_latlng === undefined ? false : field.geocoder_appearance_latlng));
 		});";
-		return $someJS;
+		return $some_js;
 	}
 
 	/**
@@ -418,7 +417,7 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$geocoders = array(
 			'OSM Nomination simple query' => array(
-				'q'				=> 'Search Field'
+				'q'				=> 'Search Field',
 			),
 			'OSM Nomination full address' => array(
 				'street'		=> 'Street',
@@ -427,8 +426,8 @@ class GF_Field_Geocoder extends GF_Field {
 				'state'			=> 'State',
 				'country'		=> 'Country',
 				'postalcode'	=> 'Postal Code',
-				'countrycode'	=> 'ISO 3166-1alpha2 Country Code'
-			)
+				'countrycode'	=> 'ISO 3166-1alpha2 Country Code',
+			),
 		);
 
 		$geocoders = apply_filters( 'gfg_geocoders_fields', $geocoders );
@@ -445,14 +444,14 @@ class GF_Field_Geocoder extends GF_Field {
 	 * @param object $field The current field.
 	 * @param string $raw_value The original raw value.
 	 *
-	 * If the $merge_tag is a string equal to the ID of the current field, then 
-	 * it's the original save event and we should return the raw value. Otherwise, 
+	 * If the $merge_tag is a string equal to the ID of the current field, then
+	 * it's the original save event and we should return the raw value. Otherwise,
 	 * we actually are in a merge_tag, and we should return the $value, which will
 	 * already have gone through get_value_entry_detail and gotten cleaned up.
 	 */
 	public function gform_merge_tag_filter( $value, $merge_tag, $modifier, $field, $raw_value ) {
 		if ( 'geocoder' === $field->type ) {
-			if ( (string)$field->id === $merge_tag) { // A merge tag of "1" means it's the original save event
+			if ( (string) $field->id === $merge_tag ) {
 				return $raw_value;
 			} else {
 				return $value;
@@ -465,45 +464,49 @@ class GF_Field_Geocoder extends GF_Field {
 	/**
 	 * This function modifies a value before its used in emails, etc.
 	 *
-	 * We're going to print a web map in certain circumstances, but flat coords for 
+	 * We're going to print a web map in certain circumstances, but flat coords for
 	 * emails and print.
 	 *
 	 * @param string $value The submitted value.
 	 * @param string $currency Waht kind of currency.
-	 * @param bool $use_text Should this use text.
+	 * @param bool   $use_text Should this use text.
 	 * @param string $format Whats the expected output format.
 	 * @param string $media What's the output media.
 	 */
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
 			$leaflet = new leafletphp();
-			$leaflet->add_layer('L.geoJSON', array( json_decode( $value, true)));
+			$leaflet->add_layer( 'L.geoJSON', array( json_decode( $value, true ) ) );
 			$html = $leaflet->get_html();
 			$html .= '<div><textarea class="geocoderesults">' . $value . '</textarea></div>';
 			return $html;
-		} 
+		}
 
 		return $this->make_human_readable_cords( $value );
 	}
 
 	/**
 	 * When displayed with other entries, we just want the abbreviated version.
+	 *
+	 * @param string $value The value that is to be displayed.
+	 * @param int    $form_id The form id.
+	 * @param int    $field_id The field id.
 	 */
-	public function gform_entries_field_value( $value, $form_id, $field_id ){
+	public function gform_entries_field_value( $value, $form_id, $field_id ) {
 		$form         = GFAPI::get_form( $form_id );
 		$field        = RGFormsModel::get_field( $form, $field_id );
 
-		if ( $field->type == 'geocoder' ) {
+		if ( 'geocoder' === $field->type ) {
 			return $this->make_human_readable_cords( html_entity_decode( $value ) );
 		}
 		return $value;
 	}
 
 	/**
-	 * Format GeoJSON for human consumption. Since this is geocoding, we're going to assume 
-	 * we're dealing with a point coordinate. 
+	 * Format GeoJSON for human consumption. Since this is geocoding, we're going to assume
+	 * we're dealing with a point coordinate.
 	 *
-	 * @param string $value A value, probably GeoJSON. 
+	 * @param string $value A value, probably GeoJSON.
 	 *
 	 * Returns the value as-is if it's not parsable as a point.
 	 */

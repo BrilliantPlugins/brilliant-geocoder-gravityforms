@@ -3,6 +3,7 @@
  * gfg_geocoder_engines - A dict of functions where the keys are geocoding engine names and the functions handle the actual API calls and result processing.
  * gfg_geocodings - A dict of geocodings for the current form. The key is the target geocoding field. The values are information about which engine to use, which fields to use for source data, and what parameters to use for the request.
  * gfg_geocoder_keys - A dict of additional parameters to send to the geocoder service.
+ * gfg_sync_data - An object that keeps the map, geojson and lat/lng fields in sync when any of the other fields change.
 
  * gfg_update_geocoder() - The event handler that is fired whenever a source input field is changed. 
 

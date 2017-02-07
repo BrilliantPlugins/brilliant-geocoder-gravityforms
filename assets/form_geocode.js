@@ -115,7 +115,7 @@ window.gfg_geocoder_engines = {
 window.gfg_geocoder_keys = window.gfg_geocoder_keys || {};
 
 // This handles syncing info between the map, the geojson input and the lat/lng fields
-// e is the event, field_id is the main target field ID - ie. the geojson field
+// field_id is the main target field ID - ie. the geojson field
 window.gfg_sync_data = function( field_id ){
 
 	var self = this;

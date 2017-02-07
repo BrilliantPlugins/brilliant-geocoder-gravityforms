@@ -13,9 +13,8 @@ Features
  * Includes WP-GeoMeta - Posts and users created with GravityForms can store real spatial data which can then be queried with real spatial query functions.
  * Default Geocoder doesn't even need an API key!
 
-TODO
-----
+Future Features
+---------------
 
- * Make setting for form output Optional Map, text area or hidden 
  * Reverse geocoding (map point to address/etc)
  * Reverse geocoding in admin interface
