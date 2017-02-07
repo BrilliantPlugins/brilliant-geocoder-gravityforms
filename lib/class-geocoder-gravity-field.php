@@ -41,13 +41,11 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function __construct( $data = array() ) {
 		parent::__construct( $data );
-		if ( ! empty( $data ) ) {
-			add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
-			add_action( 'gform_field_appearance_settings', array( $this, 'gform_field_appearance_settings' ), 10, 2 );
-			add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
-			add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
-			add_filter( 'gform_entries_field_value', array( $this, 'gform_entries_field_value' ), 10, 3 );
-		}
+		add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
+		add_action( 'gform_field_appearance_settings', array( $this, 'gform_field_appearance_settings' ), 10, 2 );
+		add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
+		add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
+		add_filter( 'gform_entries_field_value', array( $this, 'gform_entries_field_value' ), 10, 3 );
 	}
 
 	/**

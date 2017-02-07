@@ -21,16 +21,22 @@ geocoder enabled by default and supports [Geocod.io](https://geocod.io/)
 and the [Google Maps API](https://developers.google.com/maps/) once you've entered 
 API keys for those services. 
 
-**NOTICE**: _OSM Nominatim requests that you include your email address in API calls 
-if you are making a large number of requests, so we send the WP admin email address 
-by default. You can change what is sent on the Gravity Forms settings page,
-under *Geocoder*_.
-
 The geocoder field can be displayed as a map, as latitude and longitude
 fields, as the raw GeoJSON data, or hidden.
 
 This plugin supports WP-GeoMeta, so if you create posts or users with geocoded
 data, their location will be stored as spatial metadata.
+
+**NOTICE**: _OSM Nominatim requests that you include your email address in API calls 
+if you are making a large number of requests, so we send the WP admin email address 
+by default. You can change what is sent on the Gravity Forms settings page,
+under *Geocoder*_.
+
+= What is Geocoding? =
+
+[Geocoding](https://en.wikipedia.org/wiki/Geocoding) is the process of turning 
+text (an address) into coordinates (latitude and longitude). With coordinates 
+you can display data on a map and do location based searching.
 
 = Support for Other Geocoders =
 
@@ -51,8 +57,8 @@ Be sure that Gravity Forms is installed.
 With Gravity Forms installed, you can install this plugin in the usual WordPress way.
 
 1. Unzip and upload the plugin files to the `/wp-content/plugins/brilliant-geocoder-gravityforms` directory,
-    or install the plugin through the WordPress plugin screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress.
+    or upload the plugin's .zip file through the WordPress plugin screen directly.
+2. Activate the plugin on the 'Plugins' screen in WordPress.
 
 = Creating your first Geocoding field = 
 

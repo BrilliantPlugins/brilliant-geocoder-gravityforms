@@ -18,6 +18,7 @@ jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 
 		// Get the rule fields, then unset the onchange attribute
 		ruleFields = jQuery( GetRuleFields('geocoding', i, '' ) );
+		ruleFields.find('option[value="' + field.id + '"]').remove(); // Remove ourself from the list.
 		ruleFields.prepend( '<option value="">Don\'t geocode with this field</option>' );
 		ruleFields.attr('onchange','SetFieldProperty(\'geocoding_mapping_'+ i +'\',this.value);');
 
