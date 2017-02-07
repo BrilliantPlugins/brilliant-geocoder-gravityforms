@@ -152,18 +152,21 @@ class GF_Field_Geocoder extends GF_Field {
 		 */
 		if ( $show_map || $is_form_editor || $is_entry_detail ) {
 			$leaflet = new LeafletPHP( array(), "geocode_map_$field_id" );
-			$leaflet->add_layer( 'L.geoJSON', array( $geojson ), 'editthis' );
-			$leaflet->add_control('L.Control.Draw',array(
-				'draw' => array(
-					'polyline' => false,
-					'polygon' => false,
-					'circle' => false,
-					'rectangle' => false,
-				),
-				'edit' => array(
-					'featureGroup' => '@@@editthis@@@',
-				),
-			),'drawControl');
+
+			if ( !$is_form_editor ) {
+				$leaflet->add_layer( 'L.geoJSON', array( $geojson ), 'editthis' );
+				$leaflet->add_control('L.Control.Draw',array(
+					'draw' => array(
+						'polyline' => false,
+						'polygon' => false,
+						'circle' => false,
+						'rectangle' => false,
+					),
+					'edit' => array(
+						'featureGroup' => '@@@editthis@@@',
+					),
+				),'drawControl');
+			}
 
 			if ( $is_entry_detail ) {
 				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
@@ -171,12 +174,12 @@ class GF_Field_Geocoder extends GF_Field {
 
 			if ( $is_form_editor ) {
 
-				$class = '';
+				$fe_class = '';
 				if ( ! $show_map ) {
-					$class = 'hidden';
+					$fe_class = 'hidden';
 				}
 
-				$input .= '<div class="mapdisplay ' . $class . '">';
+				$input .= '<div class="mapdisplay ' . $fe_class . '">';
 			}
 
 			$input .= '<p>' . $leaflet->get_html() . '</p>';
@@ -193,15 +196,15 @@ class GF_Field_Geocoder extends GF_Field {
 
 			if ( $is_form_editor ) {
 
-				$class = '';
+				$fe_class = '';
 				if ( ! $show_geojson ) {
-					$class = 'hidden';
+					$fe_class = 'hidden';
 				}
 
-				$input .= '<div class="geojsondisplay ' . $class . '">';
+				$input .= '<div class="geojsondisplay ' . $fe_class . '">';
 			}
 
-			$input .= "<span class='ginput_full'><textarea name='{$field_id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__( 'Location GeoJSON' ) . '</label></span>';
+			$input .= "<span class='ginput_full'><textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__( 'Location GeoJSON' ) . '</label></span>';
 
 			if ( $is_form_editor ) {
 				$input .= '</div>';
@@ -214,12 +217,12 @@ class GF_Field_Geocoder extends GF_Field {
 
 			if ( $is_form_editor ) {
 
-				$class = '';
+				$fe_class = '';
 				if ( ! $show_latlng ) {
-					$class = 'hidden';
+					$fe_class = 'hidden';
 				}
 
-				$input .= '<div class="latlngdisplay ' . $class . '">';
+				$input .= '<div class="latlngdisplay ' . $fe_class . '">';
 			}
 
 			if ( is_array( $geojson['geometry'] ) && is_array( $geojson['geometry']['coordinates'] ) ) {
@@ -406,8 +409,8 @@ class GF_Field_Geocoder extends GF_Field {
 			jQuery('#geocoder_appearance_map').prop('checked',(field.geocoder_appearance_map === undefined ? true : field.geocoder_appearance_map));
 			jQuery('#geocoder_appearance_geojson').prop('checked',(field.geocoder_appearance_geojson === undefined ? false : field.geocoder_appearance_geojson));
 			jQuery('#geocoder_appearance_latlng').prop('checked',(field.geocoder_appearance_latlng === undefined ? false : field.geocoder_appearance_latlng));
-		});";
-		return $some_js;
+	});";
+return $some_js;
 	}
 
 	/**

@@ -46,6 +46,9 @@ function gfg_update_geocoder( e ) {
 		// Fetch user-input data
 		for ( attr in curgc.fields ) {
 			args[ curgc.fields[ attr ] ] = jQuery('#' + attr).val();
+			if ( args[ curgc.fields[ attr ] ] === undefined || args[ curgc.fields[ attr ] ] === '' ) {
+				delete args[ curgc.fields[ attr ] ];
+			}
 		} 
 
 		// Append server-provided data (API keys, etc.)
@@ -127,7 +130,7 @@ window.gfg_sync_data = function( field_id ){
 		this.lng = jQuery('#' + field_id + '_lng');
 		this.geojson = jQuery('#' + field_id);
 
-		if ( this.mapobj !== undefined ) {
+		if ( this.mapobj !== undefined && L.Draw !== undefined ) {
 			this.mapobj.map.on( L.Draw.Event.EDITED, this.sync_everything);
 			this.mapobj.map.on( L.Draw.Event.CREATED, this.sync_everything);
 			this.mapobj.map.on( L.Draw.Event.DELETED, this.sync_everything);

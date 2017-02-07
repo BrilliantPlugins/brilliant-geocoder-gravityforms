@@ -48,7 +48,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 *
 	 * @var $_title
 	 */
-	protected $_title = 'Geocoder for GravityForms';
+	protected $_title = 'Brilliant Geocoder for GravityForms';
 	/**
 	 * What's the short title of this addon.
 	 *
@@ -165,8 +165,9 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function plugin_settings_description() {
 		/* Introduction. */
 		$description = '';
-		$description .= '<h2>Geocoding settings</h2>';
-		$description .= '<p>http://wiki.openstreetmap.org/wiki/Nominatim, https://geocod.io/docs/#single-address</p>';
+		$description .= '<h2>Brilliant Geocoder</h2>';
+		$description .= '<p>Brilliant Geocoder for Gravity Forms comes with the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">Open Street Maps Nominatim</a> geocoder ready to use.</p>';
+		$description .= '<p>It also supports <a href="https://geocod.io/">Geocod.io</a> and the <a href="https://developers.google.com/maps/documentation/javascript/">Google Maps API</a> out of the box, if you provide an API key here.</p>';
 
 		return $description;
 	}
