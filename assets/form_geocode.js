@@ -170,7 +170,7 @@ window.gfg_sync_data = function( field_id ){
 				break;
 			case self.geojson[0]:
 				try {
-					new_geojson = JSON.parse( self.geojson[0].value );
+					new_geojson = JSON.parse( self.geojson.val() );
 				} catch (e){
 					// do nothing
 				}
