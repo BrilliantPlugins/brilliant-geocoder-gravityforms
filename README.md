@@ -22,4 +22,4 @@ Future Features
  * Show lat/lng in entry view
  * Prevent map from wrapping sideways
  * Use draggable markers instead of Leaflet.draw
-
+ * Some sort of indicator system for when geocoding fails

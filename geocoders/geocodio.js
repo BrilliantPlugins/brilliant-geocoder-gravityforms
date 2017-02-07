@@ -20,6 +20,8 @@ window.gfg_geocoder_engines.geocodio = function( args, success_callback, failure
 		/**
 		 * Our success handler needs to turn a successful geocode result into GeoJSON.
 		 *
+		 * The GeoJSON should be a single Feature (not a FeatureCollection).
+		 *
 		 * This will allow results to be used on maps, and to be stored with WP-GeoMeta.
 		 */
 

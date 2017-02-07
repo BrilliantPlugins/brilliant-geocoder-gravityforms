@@ -1,8 +1,9 @@
 === Brilliant Geocoder for Gravity Forms ===
 Contributors: stuporglue, luminfire, cimburacom
-Tags: Gravity Forms, GIS, geo, Spatial, geocoding, WP-GeoMeta, OSM, Google
-Maps API, map, GeoJSON
+Tags: Gravity Forms, GIS, geo, Spatial, geocoding, WP-GeoMeta, OSM, Nominatim, Google, Maps API, map, GeoJSON
 Tested up to: 4.7.2
+Requires at least: 4.4.1
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,19 +15,33 @@ Brilliant Geocoder for Gravity Forms is a powerful and flexible geocoder field
 for Gravity Forms. The Geocoder field is easily be configured to capture geocoder 
 input values from other form fields.
 
-It comes with the OSM Nominatim geocoder enabled by default and supports Geocod.io 
-and the Google Maps API once you've entered API keys for those services. 
+It comes with the [OSM
+Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim)
+geocoder enabled by default and supports [Geocod.io](https://geocod.io/)
+and the [Google Maps API](https://developers.google.com/maps/) once you've entered 
+API keys for those services. 
 
-*NOTICE*: OSM Nominatim requests that you include your email address in API calls 
+**NOTICE**: _OSM Nominatim requests that you include your email address in API calls 
 if you are making a large number of requests, so we send the WP admin email address 
-by default. You can change what is sent in the Geocoder settings in Gravity
-Forms.
+by default. You can change what is sent on the Gravity Forms settings page,
+under *Geocoder*_.
 
 The geocoder field can be displayed as a map, as latitude and longitude
 fields, as the raw GeoJSON data, or hidden.
 
 This plugin supports WP-GeoMeta, so if you create posts or users with geocoded
 data, their location will be stored as spatial metadata.
+
+= Support for Other Geocoders =
+
+Brilliant Geocoders for Gravity Forms includes hooks so that you can add
+support for other geocoding services. 
+
+OSM Nominatim support is built into the plugin, but Geocod.io and Google Maps
+API support is written the same way that you would add support for another
+service. The Geocod.io example in particular has extensive comments. 
+
+Please see geocoders/geocodio.php and geocoders/geocodio.js for details.
 
 
 == Installation ==
@@ -35,13 +50,25 @@ Be sure that Gravity Forms is installed.
 
 With Gravity Forms installed, you can install this plugin in the usual WordPress way.
 
-1. Upload the plugin files to the `/wp-content/plugins/geometa-acf` directory,
+1. Unzip and upload the plugin files to the `/wp-content/plugins/brilliant-geocoder-gravityforms` directory,
     or install the plugin through the WordPress plugin screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Optionally visit the Gravity Forms settings page enter a Geocod.io or
-Google Maps API key, or to change which email is sent with OSM Nominatim API calls.
 
-Create a new Gravity Form and add the Geocoder field from the Advanced Fields
+= Creating your first Geocoding field = 
+
+1. (Optional) Visit the Gravity Forms settings page enter a Geocod.io or
+Google Maps API key, or to change which email is sent with OSM Nominatim API calls.
+2. Create a new Gravity Form (or edit an existing one).
+3. (Optional) Visit the form settings page and select which geocoder to use.
+It will use OSM Nominatim by default.
+4. Add the input fields you want the user to fill out.
+5. Add the Geocoder field (under the Advanced Fields tab).
+6. In the Geocoder field associate the geocoder parameters with the other input
+fields on your form. 
+7. Publish your form and add it to a page like you would any other Gravity
+Form!
+
+and add the Geocoder field from the Advanced Fields
 menu. Add other input fields, then in the Geocoder settings select which
 fields will be used as parameters for the geocoding.
 
