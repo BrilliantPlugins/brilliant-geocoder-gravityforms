@@ -1,3 +1,6 @@
 [submodule "lib/leaflet-php"]
 	path = lib/leaflet-php
 	url = https://github.com/cimburadotcom/leaflet-php.git
+[submodule "lib/wp-geometa-lib"]
+	path = lib/wp-geometa-lib
+	url = https://github.com/cimburadotcom/wp-geometa-lib.git
