@@ -6,12 +6,12 @@ function gfg_update_geocoder( e ) {
 
 	// A failure handler. It just clears the field.
 	gfg_update_geocoder.handle_failure = gfg_update_geocoder.handle_failure || function( failure ){
-		jQuery('#' + target_geocode_field).val('');
+		jQuery('#' + target_geocode_field).val('').trigger('change');
 	};
 
 	// A success handler. It sets the field
 	gfg_update_geocoder.handle_success = gfg_update_geocoder.handle_success || function( success ){
-		
+
 		if ( typeof success !== 'string' ) {
 			success = JSON.stringify( success );
 		}
@@ -67,10 +67,10 @@ window.gfg_geocoder_engines = {
 		}
 
 		/**
-		 * Do a get request, and handle success. 
-		 *
-		 * Also, return the jQuery.get() result, which will be a deferred/promise.
-		 */
+		* Do a get request, and handle success. 
+		*
+		* Also, return the jQuery.get() result, which will be a deferred/promise.
+		*/
 		jQuery.get('https://nominatim.openstreetmap.org/search?' + jQuery.param( args ), function( success ){
 
 			var geojson = '';
@@ -113,3 +113,122 @@ window.gfg_geocoder_engines = {
 
 // This holds any extra values that the geocoder will need such as API keys
 window.gfg_geocoder_keys = window.gfg_geocoder_keys || {};
+
+// This handles syncing info between the map, the geojson input and the lat/lng fields
+// e is the event, field_id is the main target field ID - ie. the geojson field
+window.gfg_sync_data = function( field_id ){
+
+	var self = this;
+
+	this.init = function(){
+		this.field_id = field_id;
+		this.mapobj = window['geocode_map_' + field_id];
+		this.lat = jQuery('#' + field_id + '_lat');
+		this.lng = jQuery('#' + field_id + '_lng');
+		this.geojson = jQuery('#' + field_id);
+
+		if ( this.mapobj !== undefined ) {
+			this.mapobj.map.on( L.Draw.Event.EDITED, this.sync_everything);
+			this.mapobj.map.on( L.Draw.Event.CREATED, this.sync_everything);
+			this.mapobj.map.on( L.Draw.Event.DELETED, this.sync_everything);
+		} else {
+			this.mapobj = {'map':-1};
+		}
+
+		if ( this.lat !== undefined && this.lng !== undefined ) {
+			this.lat.on('change',this.sync_everything);
+			this.lng.on('change',this.sync_everything);
+		} else {
+			this.lat = [-1];
+			this.lng = [-1];
+		}
+
+		if ( this.geojson !== undefined ) {
+			this.geojson.on('change',this.sync_everything);
+		}
+	};
+
+
+	this.sync_everything = function(e){
+
+		var new_geojson;
+
+		switch ( e.target ) {
+			case self.lat[0]:
+			case self.lng[0]:
+
+				if ( NaN !== parseFloat(self.lat.val()) && NaN !== parseFloat(self.lng.val()) ) {
+					new_geojson = {
+						"type":"Feature",
+						"geometry":{
+							"type":"Point",
+							"coordinates":[ parseFloat(self.lng.val()), parseFloat(self.lat.val()) ]
+						},
+						"properties":{}
+					};
+				}
+				break;
+			case self.geojson[0]:
+				try {
+					new_geojson = JSON.parse( self.geojson[0].value );
+				} catch (e){
+					// do nothing
+				}
+				break;
+			case self.mapobj.map:
+				new_geojson = self.mapobj.layers.editthis.toGeoJSON();
+
+				// On new layer creation, capture the new layer instead of the old one.
+				if ( e.layer !== undefined ) {
+					new_geojson = e.layer.toGeoJSON();
+				}
+
+				jQuery(new_geojson.features).each(function(){this.properties = {};});
+				break;
+		}
+
+		if ( new_geojson !== undefined && new_geojson.type === 'FeatureCollection' ) {
+			new_geojson = new_geojson.features[0];
+		}
+
+		if ( 
+			undefined !== new_geojson && 
+			undefined !== new_geojson.geometry && 
+			undefined !== new_geojson.geometry.coordinates && 
+			2 === new_geojson.geometry.coordinates.length
+		) {
+			if ( typeof self.lat.val === 'function' && typeof self.lng.val === 'function' ) {
+				self.lat.val(new_geojson.geometry.coordinates[1]);
+				self.lng.val(new_geojson.geometry.coordinates[0]);
+			}
+			if ( typeof self.geojson.val === 'function' ){
+				self.geojson.val(JSON.stringify(new_geojson));
+			}
+			if ( self.mapobj.layers !== undefined &&
+			self.mapobj.layers.editthis !== undefined ) {
+				self.mapobj.layers.editthis.clearLayers(); 
+				self.mapobj.layers.editthis.addData( new_geojson );
+			}
+		} else {
+			if ( typeof self.lat.val === 'function' && typeof self.lng.val === 'function' ) {
+				self.lat.val('');
+				self.lng.val('');
+			}
+			if ( typeof self.geojson.val === 'function' ){
+				self.geojson.val('');
+			}
+			if ( self.mapobj.layers !== undefined &&
+			self.mapobj.layers.editthis !== undefined ) {
+				self.mapobj.layers.editthis.clearLayers(); 
+			}
+		}
+
+		if ( e.target !== self.geojson[0] ) {
+			if ( typeof self.geojson.trigger === 'function' ) {
+				self.geojson.trigger("change");
+			}
+		}
+	};
+
+	this.init();
+};

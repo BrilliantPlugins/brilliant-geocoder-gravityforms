@@ -117,39 +117,94 @@ class GF_Field_Geocoder extends GF_Field {
 		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
 		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
 
-		$is_form_editor  = $this->is_form_editor();
 
-		$is_entry_detail = $this->is_entry_detail();
+		$show_map = ( !isset( $this->geocoder_appearance_map ) ? true : $this->geocoder_appearance_map );
+		$show_geojson = ( !isset( $this->geocoder_appearance_geojson ) ? false : $this->geocoder_appearance_geojson );
+		$show_latlng = ( !isset( $this->geocoder_appearance_latlng ) ? false : $this->geocoder_appearance_latlng );
 
-		if ( $is_entry_detail ) {
-			$leaflet = new leafletphp();
-			$leaflet->add_layer('L.geoJSON', array( json_decode( html_entity_decode( $value ) ) ), 'editthis' );
+
+		$show_something = ($show_map || $show_geojson || $show_latlng );
+
+
+		$input = '';
+
+		$geojson = json_decode( html_entity_decode( $value ), true );
+
+
+		if ( $show_something ) {
+			$classes = array();
+			if ( $show_map ) {
+				$classes[] = 'has_map';
+			}
+			if ( $show_geojson ) {
+				$classes[] = 'has_geojson';
+			}
+			if ( $show_latlng ) {
+				$classes[] = 'has_latlng';
+			}
+			$input .= '<div class="ginput_complex ginput_container ' . implode(' ', $classes ) . '">';
+		}
+
+
+		/**
+		 * Display the map, with a Leaflet.draw editor
+		 */
+		if ( $show_map ) {
+			$leaflet = new leafletphp(array(), "geocode_map_$field_id" );
+			$leaflet->add_layer('L.geoJSON', array( $geojson ), 'editthis' );
 			$leaflet->add_control('L.Control.Draw',array(
 				'draw' => array(
 					'polyline' => false,
 					'polygon' => false,
 					'circle' => false,
 					'rectangle' => false,
-					'marker' => false,
 				),
 				'edit' => array(
-					'featureGroup' => '@@@editthis@@@',
-					'remove' => false,
+					'featureGroup' => '@@@editthis@@@'
 				),
 			),'drawControl');
-			$leaflet->add_script( 'map.on( L.Draw.Event.EDITED, function(e){ jQuery("#input_' . $id . '").val( JSON.stringify( editthis.toGeoJSON() ) ); });');
 
-			$leaflet->add_script( 'jQuery("#input_' . $id . '").on("change",function(e){ 
-				editthis.clearLayers(); 
-				editthis.addData( JSON.parse(e.target.value) );});' 
-				);
+			/*
+			 *
+			 *
+			 * TODO: Only enqueue this on admin pages!!!!!
+			 *
+			$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
+			 */
 
-				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
+			$input .= $leaflet->get_html() . '<br>';
+		} 
 
-				$input = $leaflet->get_html();
-				$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
+		/**
+		 * Show the GeoJSON text input box
+		 */
+		if ( $show_geojson ) {
+			$input .= "<span class='ginput_full'><textarea name='{$field_id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__('Location GeoJSON') . '</label></span>';
 		} else {
-			$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
+			$input .= "<input name='{$field_id}' id='{$field_id}' type='hidden' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
+		}
+
+		if ( $show_latlng ) {
+			if ( is_array( $geojson['geometry'] ) && is_array( $geojson['geometry']['coordinates'] ) ) {
+				$lat = $geojson['geometry']['coordinates'][1];
+				$lng = $geojson['geometry']['coordinates'][0];
+			} else {
+				$lat = '';
+				$lng = '';
+			}
+			$input .= '<span class="ginput_left">';
+			$input .= "<input class='gf_left_half' id='{$field_id}_lat' type='text' value='{$lat}'><label for='{$field_id}_lat'>" . esc_html__('Latitude', 'cimburacom' ) . "</label>";
+			$input .= '</span>';
+			$input .= '<span class="ginput_right ginput_container">';
+			$input .= "<input class='gf_right_half' id='{$field_id}_lng' type='text' value='{$lng}'><label for='{$field_id}_lng'>" . esc_html__('Longitude', 'cimburacom' ) . "</label>";
+			$input .= '</span>';
+		}
+
+		$input .= "\n" . '<script>jQuery(document).ready(function(){new gfg_sync_data("' . $field_id . '");});</script>';
+
+
+		if ( $show_something ) {
+			$input .= '</div>';
 		}
 
 		return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
@@ -380,7 +435,7 @@ class GF_Field_Geocoder extends GF_Field {
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
 			$leaflet = new leafletphp();
-			$leaflet->add_layer('L.geoJSON', array( json_decode( $value ) ));
+			$leaflet->add_layer('L.geoJSON', array( json_decode( $value, true)));
 			$html = $leaflet->get_html();
 			$html .= '<div><textarea class="geocoderesults">' . $value . '</textarea></div>';
 			return $html;
@@ -389,6 +444,9 @@ class GF_Field_Geocoder extends GF_Field {
 		return $this->make_human_readable_cords( $value );
 	}
 
+	/**
+	 * When displayed with other entries, we just want the abbreviated version.
+	 */
 	public function gform_entries_field_value( $value, $form_id, $field_id ){
 		$form         = GFAPI::get_form( $form_id );
 		$field        = RGFormsModel::get_field( $form, $field_id );
