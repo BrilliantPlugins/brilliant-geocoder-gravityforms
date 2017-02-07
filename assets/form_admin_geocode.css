@@ -10,3 +10,9 @@ textarea.geocoderesults {
 	width: 100%;
 	min-height: 80px;
 }
+
+.mapdisplay.hidden,
+.geojsondisplay.hidden,
+.latlngdisplay.hidden {
+	display: none;
+}

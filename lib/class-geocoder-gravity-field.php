@@ -125,7 +125,6 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$show_something = ($show_map || $show_geojson || $show_latlng );
 
-
 		$input = '';
 
 		$geojson = json_decode( html_entity_decode( $value ), true );
@@ -149,7 +148,7 @@ class GF_Field_Geocoder extends GF_Field {
 		/**
 		 * Display the map, with a Leaflet.draw editor
 		 */
-		if ( $show_map ) {
+		if ( $show_map || $is_form_editor || $is_entry_detail ) {
 			$leaflet = new leafletphp(array(), "geocode_map_$field_id" );
 			$leaflet->add_layer('L.geoJSON', array( $geojson ), 'editthis' );
 			$leaflet->add_control('L.Control.Draw',array(
@@ -164,27 +163,65 @@ class GF_Field_Geocoder extends GF_Field {
 				),
 			),'drawControl');
 
-			/*
-			 *
-			 *
-			 * TODO: Only enqueue this on admin pages!!!!!
-			 *
-			$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
-			 */
+			if ( $is_entry_detail ) {
+				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
+			}
 
-			$input .= $leaflet->get_html() . '<br>';
+			if ( $is_form_editor ) {
+
+				$class = '';
+				if ( !$show_map ) {
+					$class = 'hidden';
+				}
+
+				$input .= '<div class="mapdisplay ' . $class . '">';
+			}
+
+			$input .= '<p>' . $leaflet->get_html() . '</p>';
+
+			if ( $is_form_editor ) {
+				$input .= '</div>';
+			}
+
 		} 
 
 		/**
 		 * Show the GeoJSON text input box
 		 */
-		if ( $show_geojson ) {
+		if ( $show_geojson || $is_form_editor || $is_entry_detail ) {
+
+			if ( $is_form_editor ) {
+
+				$class = '';
+				if ( !$show_geojson ) {
+					$class = 'hidden';
+				}
+
+				$input .= '<div class="geojsondisplay ' . $class . '">';
+			}
+
 			$input .= "<span class='ginput_full'><textarea name='{$field_id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea><label for='{$field_id}'>" . esc_html__('Location GeoJSON') . '</label></span>';
+
+			if ( $is_form_editor ) {
+				$input .= '</div>';
+			}
 		} else {
 			$input .= "<input name='input_{$id}' id='{$field_id}' type='hidden' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
 		}
 
-		if ( $show_latlng ) {
+		if ( $show_latlng || $is_form_editor || $is_entry_detail) {
+
+
+			if ( $is_form_editor ) {
+
+				$class = '';
+				if ( !$show_latlng ) {
+					$class = 'hidden';
+				}
+
+				$input .= '<div class="latlngdisplay ' . $class . '">';
+			}
+
 			if ( is_array( $geojson['geometry'] ) && is_array( $geojson['geometry']['coordinates'] ) ) {
 				$lat = $geojson['geometry']['coordinates'][1];
 				$lng = $geojson['geometry']['coordinates'][0];
@@ -198,6 +235,11 @@ class GF_Field_Geocoder extends GF_Field {
 			$input .= '<span class="ginput_right ginput_container">';
 			$input .= "<input class='gf_right_half' id='{$field_id}_lng' type='text' value='{$lng}'><label for='{$field_id}_lng'>" . esc_html__('Longitude', 'cimburacom' ) . "</label>";
 			$input .= '</span>';
+
+
+			if ( $is_form_editor ) {
+				$input .= '</div>';
+			}
 		}
 
 		$input .= "\n" . '<script>jQuery(document).ready(function(){new gfg_sync_data("' . $field_id . '");});</script>';
@@ -209,82 +251,6 @@ class GF_Field_Geocoder extends GF_Field {
 
 		return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
 	}
-
-
-	/**
-	 * Get the field html.
-	 *
-	 * @param object $form The current form.
-	 * @param string $value The current value of the field.
-	 * @param array $entry The current entry.
-	 */
-
-	/**
-	 * Get the field html.
-	 *
-	 * @param object $form The current form.
-	 * @param string $value The current value of the field.
-	 * @param array $entry The current entry.
-	 */
-	public function old_get_field_input( $form, $value = '', $entry = null ) {
-		$form_id         = absint( $form['id'] );
-		$is_entry_detail = $this->is_entry_detail();
-		$is_form_editor  = $this->is_form_editor();
-
-		$logic_event = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
-		$id          = (int) $this->id;
-		$field_id    = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
-
-		$value        = esc_attr( $value );
-		$size         = $this->size;
-		$class_suffix = $is_entry_detail ? '_admin' : '';
-		$class        = $size . $class_suffix;
-
-		$max_length = is_numeric( $this->maxLength ) ? "maxlength='{$this->maxLength}'" : '';
-
-		$tabindex              = $this->get_tabindex();
-		$disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
-		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
-		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
-
-		$is_form_editor  = $this->is_form_editor();
-
-		$is_entry_detail = $this->is_entry_detail();
-
-		if ( $is_entry_detail ) {
-			$leaflet = new leafletphp();
-			$leaflet->add_layer('L.geoJSON', array( json_decode( html_entity_decode( $value ) ) ), 'editthis' );
-			$leaflet->add_control('L.Control.Draw',array(
-				'draw' => array(
-					'polyline' => false,
-					'polygon' => false,
-					'circle' => false,
-					'rectangle' => false,
-					'marker' => false,
-				),
-				'edit' => array(
-					'featureGroup' => '@@@editthis@@@',
-					'remove' => false,
-				),
-			),'drawControl');
-			$leaflet->add_script( 'map.on( L.Draw.Event.EDITED, function(e){ jQuery("#input_' . $id . '").val( JSON.stringify( editthis.toGeoJSON() ) ); });');
-
-			$leaflet->add_script( 'jQuery("#input_' . $id . '").on("change",function(e){
-				editthis.clearLayers();
-				editthis.addData( JSON.parse(e.target.value) );});'
-				);
-
-				$leaflet->add_script( $this->get_form_inline_script_on_page_render( $form, false ) );
-
-				$input = $leaflet->get_html();
-				$input .= "<textarea name='input_{$id}' id='{$field_id}' class='geocoderesults {$class}' {$tabindex} {$logic_event} {$required_attribute} {$invalid_attribute} {$disabled_text}>{$value}</textarea>";
-		} else {
-			$input = "<input name='input_{$id}' id='{$field_id}' type='text' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$invalid_attribute} {$disabled_text}/>";
-		}
-
-		return sprintf( "<div class='ginput_container ginput_container_geocoder'>%s</div>", $input );
-	}
-	
 
 	/**
 	 * Is the submitted field valid? 
