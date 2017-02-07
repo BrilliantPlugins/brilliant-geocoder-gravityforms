@@ -7,7 +7,7 @@ jQuery(document).bind('gform_load_field_settings', function(e, field, form){
 		return;
 	}
 
-	var fields = gfg_geocoders[ form.which_geocoder ];
+	var fields = gfg_geocoders[ form.which_geocoder || 'OSM Nominatim simple query' ];
 
 	var ruleFields;
 	var html = '';

@@ -11,7 +11,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 /**
  * This class provides a geocoder field for GravityForms. It is extensible so that it can support
- * various geocoding services. It defaults to OSM Nomination out of the box, but comes with
+ * various geocoding services. It defaults to OSM Nominatim out of the box, but comes with
  * Google Maps API, Geocod.io and can easily be extended to support other services.
  */
 class GF_Field_Geocoder extends GF_Field {
@@ -278,9 +278,11 @@ class GF_Field_Geocoder extends GF_Field {
 
 			$form = GFAPI::get_form( $form_id );
 
+			$which_geocoder = ( !empty( $form['which_geocoder'] ) ? $form['which_geocoder'] : 'OSM Nominatim simple query' );
+
 			print '<li class="geocoding_setting field_setting">';
 			print '<label class="section_label" for="field_admin_label">Geocoding Source Fields</label>';
-			print '<p>Configure the mapping for the <em>' . esc_html( $form['which_geocoder'] ) . '</em> eocoding service.</p>';
+			print '<p>Configure the mapping for the <em>' . esc_html( $which_geocoder ) . '</em> eocoding service.</p>';
 			print '<table class="default_input_values" id="">';
 
 			print '<thead><tr>';
@@ -357,9 +359,12 @@ class GF_Field_Geocoder extends GF_Field {
 	public function get_form_inline_script_on_page_render( $form, $include_form_id_bit = true ) {
 		$geocoders = $this->get_geocoder_field_mapping();
 		$gfg = Geocoder_for_Gravity::get_instance();
-		$geocoding_engine = $gfg->get_engine_for_geocoder( $form['which_geocoder'] );
 
-		$fields = $geocoders[ $form['which_geocoder'] ];
+		$which_geocoder = ( !empty( $form['which_geocoder'] ) ? $form['which_geocoder'] : 'OSM Nominatim simple query' );
+
+		$geocoding_engine = $gfg->get_engine_for_geocoder( $which_geocoder );
+
+		$fields = $geocoders[ $which_geocoder ];
 
 		$form_id_bit = $this->formId . '_'; // @codingStandardsIgnoreLine
 
@@ -381,7 +386,7 @@ class GF_Field_Geocoder extends GF_Field {
 		$script .= "\n" . 'jQuery("#' . implode( ',#', array_keys( $selectors ) ) . '").on("change", gfg_update_geocoder);' . "\n";
 
 		$extra_keys = array();
-		if ( 'nomination' === $geocoding_engine ) {
+		if ( 'nominatim' === $geocoding_engine ) {
 			$extra_keys['email'] = get_bloginfo( 'admin_email' );
 			$extra_keys['format'] = 'jsonv2';
 			$extra_keys['extratags'] = 1;
@@ -419,10 +424,10 @@ return $some_js;
 	public function get_geocoder_field_mapping() {
 
 		$geocoders = array(
-			'OSM Nomination simple query' => array(
+			'OSM Nominatim simple query' => array(
 				'q'				=> 'Search Field',
 			),
-			'OSM Nomination full address' => array(
+			'OSM Nominatim full address' => array(
 				'street'		=> 'Street',
 				'city'			=> 'City',
 				'county'		=> 'County',

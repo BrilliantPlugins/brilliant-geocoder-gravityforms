@@ -94,12 +94,12 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function get_geocoders() {
 		$geocoders = array(
 			array(
-				'geocoder' => 'OSM Nomination simple query',
-				'geocoder_engine' => 'nomination',
+				'geocoder' => 'OSM Nominatim simple query',
+				'geocoder_engine' => 'nominatim',
 			),
 			array(
-				'geocoder' => 'OSM Nomination full address',
-				'geocoder_engine' => 'nomination',
+				'geocoder' => 'OSM Nominatim full address',
+				'geocoder_engine' => 'nominatim',
 			),
 		);
 
@@ -181,6 +181,9 @@ class Geocoder_for_Gravity extends GFAddOn {
 			$base_url = plugins_url( '', dirname( __FILE__ ) );
 			wp_enqueue_script( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.js', array( 'jquery' ), $this->_version );
 			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array(), $this->_version );
+
+			$leafletphp = new LeafletPHP();
+			$leafletphp->enqueue_scripts();
 		}
 	}
 
@@ -207,9 +210,9 @@ class Geocoder_for_Gravity extends GFAddOn {
 		// Get plugin settings so we can see if we have needed API keys.
 		$plugin_settings = $this->get_plugin_settings();
 
-		// See which geocoder we're using. Default to the OSM Nomination geocoder.
+		// See which geocoder we're using. Default to the OSM Nominatim geocoder.
 		$selected_geocoder = rgar( $form, 'which_geocoder' );
-		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nomination simple query' : $selected_geocoder );
+		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nominatim simple query' : $selected_geocoder );
 
 		// Build up the options.
 		$options = '';

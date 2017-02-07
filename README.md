@@ -16,5 +16,9 @@ Features
 Future Features
 ---------------
 
- * Reverse geocoding (map point to address/etc)
+ * Reverse geocoding (map point to address)
  * Reverse geocoding in admin interface
+ * GF-wide default geocoder setting
+ * Show lat/lng in entry view
+ * Prevent map from wrapping sideways
+

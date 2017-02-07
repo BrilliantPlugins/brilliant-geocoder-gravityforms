@@ -62,10 +62,10 @@ function gfg_update_geocoder( e ) {
 
 // These are the functions that call the geocoders and process responses
 window.gfg_geocoder_engines = {
-	'nomination' : function( args, success_callback, failure_callback ) {
+	'nominatim' : function( args, success_callback, failure_callback ) {
 
-		// Nomination doesn't like newlines in the query
-		if ( typeof args.q !== undefined ) {
+		// Nominatim doesn't like newlines in the query
+		if ( args.q !== undefined ) {
 			args.q = args.q.replace(/\n/g,",");
 		}
 
