@@ -1,0 +1,3 @@
+[submodule "lib/leaflet-php"]
+	path = lib/leaflet-php
+	url = https://github.com/cimburadotcom/leaflet-php.git

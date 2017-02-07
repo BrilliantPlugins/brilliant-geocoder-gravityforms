@@ -151,7 +151,7 @@ class GF_Field_Geocoder extends GF_Field {
 		 * Display the map, with a Leaflet.draw editor
 		 */
 		if ( $show_map || $is_form_editor || $is_entry_detail ) {
-			$leaflet = new leafletphp( array(), "geocode_map_$field_id" );
+			$leaflet = new LeafletPHP( array(), "geocode_map_$field_id" );
 			$leaflet->add_layer( 'L.geoJSON', array( $geojson ), 'editthis' );
 			$leaflet->add_control('L.Control.Draw',array(
 				'draw' => array(
@@ -475,7 +475,7 @@ class GF_Field_Geocoder extends GF_Field {
 	 */
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 		if ( 'screen' === $media && 'html' === $format && false === $use_text ) {
-			$leaflet = new leafletphp();
+			$leaflet = new LeafletPHP();
 			$leaflet->add_layer( 'L.geoJSON', array( json_decode( $value, true ) ) );
 			$html = $leaflet->get_html();
 			$html .= '<div><textarea class="geocoderesults">' . $value . '</textarea></div>';
