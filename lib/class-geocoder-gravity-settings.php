@@ -101,6 +101,12 @@ class Geocoder_for_Gravity extends GFAddOn {
 				'geocoder' => 'OSM Nominatim full address',
 				'geocoder_engine' => 'nominatim',
 			),
+			array(
+				'name' => 'osm_nominatim_email',
+				'label' => 'OSM Nominatim Usage Email',
+				'type' => 'text',
+				'value' => get_bloginfo( 'admin_email' ),
+			),
 		);
 
 		$geocoders = apply_filters( 'gfg_geocoders', $geocoders );
@@ -168,6 +174,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 		$description .= '<h2>Brilliant Geocoder</h2>';
 		$description .= '<p>Brilliant Geocoder for Gravity Forms comes with the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">Open Street Maps Nominatim</a> geocoder ready to use.</p>';
 		$description .= '<p>It also supports <a href="https://geocod.io/">Geocod.io</a> and the <a href="https://developers.google.com/maps/documentation/javascript/">Google Maps API</a> out of the box, if you provide an API key here.</p>';
+		$description .= '<p><br><b>NOTICE</b>: OSM Nominatim requests that you include your email address in API calls if you are making a large number of requests, so we send the WP admin email address by default. You can change which email address is sent below.<br></p>';
 
 		return $description;
 	}

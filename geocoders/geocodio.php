@@ -77,6 +77,7 @@ function gfg_geocodio_geocoders( $geocoders ) {
 		'name' => 'geocodio_key',
 		'label' => 'Geocod.io API Key',
 		'type' => 'text',
+		'placeholder' => 'Geocod.io API Key',
 	);
 
 	/**

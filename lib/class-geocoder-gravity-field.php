@@ -363,6 +363,7 @@ class GF_Field_Geocoder extends GF_Field {
 		$which_geocoder = ( !empty( $form['which_geocoder'] ) ? $form['which_geocoder'] : 'OSM Nominatim simple query' );
 
 		$geocoding_engine = $gfg->get_engine_for_geocoder( $which_geocoder );
+		$settings = $gfg->get_plugin_settings();
 
 		$fields = $geocoders[ $which_geocoder ];
 
@@ -387,7 +388,7 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$extra_keys = array();
 		if ( 'nominatim' === $geocoding_engine ) {
-			$extra_keys['email'] = get_bloginfo( 'admin_email' );
+			$extra_keys['email'] = ( array_key_exists('osm_nominatim_email', $settings ) ? $settings['osm_nominatim_email'] : get_bloginfo( 'admin_email' ) );
 			$extra_keys['format'] = 'jsonv2';
 			$extra_keys['extratags'] = 1;
 			$extra_keys['limit'] = 1;
