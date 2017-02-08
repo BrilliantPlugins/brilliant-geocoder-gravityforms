@@ -27,10 +27,11 @@ fields, as the raw GeoJSON data, or hidden.
 This plugin supports WP-GeoMeta, so if you create posts or users with geocoded
 data, their location will be stored as spatial metadata.
 
-**NOTICE**: _OSM Nominatim requests that you include your email address in API calls 
-if you are making a large number of requests, so we send the WP admin email address 
-by default. You can change what is sent on the Gravity Forms settings page,
-under *Geocoder*_.
+**NOTICE**: _This plugin uses 3rd party services to provide geocoding results.
+The default geocoder, [OSM Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim), 
+requests that you include your email address in API calls if you are making a large 
+number of requests, so we send the WP admin email address by default. You can change 
+what is sent on the Gravity Forms settings page, under *Geocoder*._.
 
 = What is Geocoding? =
 
