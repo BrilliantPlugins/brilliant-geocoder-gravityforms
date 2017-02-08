@@ -42,8 +42,6 @@ class GF_Field_Geocoder extends GF_Field {
 	public function __construct( $data = array() ) {
 		parent::__construct( $data );
 		// Enqueue the scripts
-		$gfg = Geocoder_for_Gravity::get_instance();
-		$gfg->enqueue_scripts();
 		add_action( 'gform_field_standard_settings', array( $this, 'gform_field_standard_settings' ), 10, 2 );
 		add_action( 'gform_field_appearance_settings', array( $this, 'gform_field_appearance_settings' ), 10, 2 );
 		add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
@@ -365,6 +363,9 @@ class GF_Field_Geocoder extends GF_Field {
 
 		$geocoding_engine = $gfg->get_engine_for_geocoder( $which_geocoder );
 		$settings = $gfg->get_plugin_settings();
+		if ( empty( $settings ) ) {
+			$settings = array();
+		}
 
 		$fields = $geocoders[ $which_geocoder ];
 

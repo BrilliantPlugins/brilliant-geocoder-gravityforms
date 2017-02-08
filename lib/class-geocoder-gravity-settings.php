@@ -83,7 +83,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function init() {
 		parent::init();
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
 		add_filter( 'gform_form_settings', array( $this, 'gform_form_settings' ), 10, 2 );
 		add_filter( 'gform_pre_form_settings_save', array( $this, 'gform_pre_form_settings_save' ) );
 	}
@@ -139,8 +139,6 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 * Make the settings fields.
 	 */
 	public function plugin_settings_fields() {
-		$settings = $this->get_plugin_settings();
-
 		$geocoders = $this->get_geocoders();
 
 		$geocoders = array_filter( $geocoders, function( $g ) {

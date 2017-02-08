@@ -23,6 +23,8 @@
  * can add support for other geocoders.
  */
 
+define( 'GFG_VERSION','0.0.1' );
+
 require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
 require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
 require_once( __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php' );
@@ -38,5 +40,4 @@ function geocoder_for_gf_init() {
 	Geocoder_for_Gravity::get_instance();
 }
 
-define( 'GFG_VERSION','0.0.1' );
 add_action( 'gform_loaded', 'geocoder_for_gf_init', 5 );
