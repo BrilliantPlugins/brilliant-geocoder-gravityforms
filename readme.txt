@@ -15,9 +15,8 @@ Brilliant Geocoder for Gravity Forms is a powerful and flexible geocoder field
 for Gravity Forms. The Geocoder field is easily be configured to capture geocoder 
 input values from other form fields.
 
-It comes with the [OSM
-Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim)
-geocoder enabled by default and supports [Geocod.io](https://geocod.io/)
+It comes with the [OSM Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim) 
+geocoder enabled by default and supports [Geocod.io](https://geocod.io/) 
 and the [Google Maps API](https://developers.google.com/maps/) once you've entered 
 API keys for those services. 
 
@@ -28,10 +27,11 @@ This plugin supports WP-GeoMeta, so if you create posts or users with geocoded
 data, their location will be stored as spatial metadata.
 
 **NOTICE**: _This plugin uses 3rd party services to provide geocoding results.
-The default geocoder, [OSM Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim), 
-requests that you include your email address in API calls if you are making a large 
-number of requests, so we send the WP admin email address by default. You can change 
-what is sent on the Gravity Forms settings page, under *Geocoder*._.
+The default geocoder, OSM Nominatim, requests that you include your email address 
+in API calls if you are making a large number of requests. We send the WP admin 
+email address by default. You can change what is sent on the Gravity Forms settings 
+page, under *Geocoder*._.
+
 
 = What is Geocoding? =
 
@@ -82,7 +82,23 @@ fields will be used as parameters for the geocoding.
 
 == Frequently Asked Questions ==
 
-No one has actually asked any questions yet!
+= Where are the Terms of Service for the Geocoding Services? =
+ - [Google Maps API Terms of Service](https://developers.google.com/maps/terms)
+ - [Geocod.io Terms of Use](https://geocod.io/terms-of-use/)
+ - [OSM Nominatim Usage Policy](https://developers.google.com/maps/terms)
+
+= What data is sent to the geocoding service when I geocode? =
+
+Whatever fields you select as a geocoding source in Gravity Forms will be sent
+to the geocoding service. This would typically means that address details
+entered into the form will be sent to the geocoding service for processing.  
+
+Your API key and/or any other parameters required by the service's terms of service
+will also be sent. 
+
+Please review the Terms of Service of the service you select for details on
+how your submitted data is stored or used.
+
 
 = How can I run spatial queries? =
 
@@ -97,14 +113,13 @@ queries, please see the [WP-GeoMeta documentation](https://github.com/cimburadot
 For commercial support you can contact the plugin developer at
 [Cimbura.com](https://cimbura.com/contact-us/project-request-form/)
 
-For fast and short questions you can [contact
-me](https://twitter.com/stuporglue) on twitter.
+For fast and short questions you can [contact me](https://twitter.com/stuporglue) on twitter.
 
 == Changelog ==
 
 = 0.0.1 = 
 * Initial release!
-* Support for OSM Nominatin
+* Support for OSM Nominatim
 * Support for Google Maps API
 * Support for Geocod.io
 * Forward geocoding support
