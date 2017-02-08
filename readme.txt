@@ -52,7 +52,7 @@ Please see geocoders/geocodio.php and geocoders/geocodio.js for details.
 
 == Installation ==
 
-Be sure that Gravity Forms is installed. 
+Be sure that Gravity Forms 2.0.0 or higher is installed. 
 
 With Gravity Forms installed, you can install this plugin in the usual WordPress way.
 
