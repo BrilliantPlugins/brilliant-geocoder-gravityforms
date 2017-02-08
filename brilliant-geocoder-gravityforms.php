@@ -25,19 +25,32 @@
 
 define( 'GFG_VERSION','0.0.1' );
 
-require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
-require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
-require_once( __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php' );
-require_once( __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php' );
-
-require_once( __DIR__ . '/geocoders/geocodio.php' );
-require_once( __DIR__ . '/geocoders/google_maps_api.php' );
-
 /**
  * Set up the geocoder when GravityForms loads.
  */
 function geocoder_for_gf_init() {
+	require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
+	require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
+	require_once( __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php' );
+	require_once( __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php' );
+
+	require_once( __DIR__ . '/geocoders/geocodio.php' );
+	require_once( __DIR__ . '/geocoders/google_maps_api.php' );
+
+	GFForms::include_addon_framework();
 	Geocoder_for_Gravity::get_instance();
 }
 
 add_action( 'gform_loaded', 'geocoder_for_gf_init', 5 );
+
+
+/**
+ * On activation make sure that Gravity Forms is present. 
+ */
+function brilliant_geocoder_for_gravity_forms_activation_hook() {
+	if ( !class_exists( 'GFForms' ) || -1 === version_compare( GFForms::$version, '2.0.0' ) ) {
+		wp_die( 'This plugin requires Gravity Forms 2.0.0 or higher. Please install and activate it first, then activate this plugin.' );
+    }
+}
+
+register_activation_hook( __FILE__ , 'brilliant_geocoder_for_gravity_forms_activation_hook' );
