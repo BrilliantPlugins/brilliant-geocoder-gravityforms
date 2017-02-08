@@ -82,6 +82,9 @@ class Geocoder_for_Gravity extends GFAddOn {
 	 */
 	public function init() {
 		parent::init();
+		add_filter( 'gform_noconflict_scripts', array( $this, 'gform_noconflict_scripts' ) );
+		add_filter( 'gform_noconflict_styles', array( $this, 'gform_noconflict_styles' ) );
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
 		add_filter( 'gform_form_settings', array( $this, 'gform_form_settings' ), 10, 2 );
@@ -261,5 +264,19 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function gform_pre_form_settings_save( $form ) {
 		$form['which_geocoder'] = trim( rgpost( 'which_geocoder' ) );
 		return $form;
+	}
+
+	function gform_noconflict_scripts( $required_scripts ) {
+		$required_scripts[] = 'form_admin_geocode';
+		$required_scripts[] = 'gfg_geocode';
+		$required_scripts[] = 'leafletphp-leaflet-js';
+		return $required_scripts;
+	}
+
+	function gform_noconflict_styles( $required_styles ) {
+		$required_styles[] = 'form_admin_geocode';
+		$required_styles[] = 'leafletphp-css';
+		$required_styles[] = 'leafletphp-leaflet-css';
+		return $required_styles;
 	}
 }

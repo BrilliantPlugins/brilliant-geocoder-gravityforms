@@ -47,6 +47,9 @@ class GF_Field_Geocoder extends GF_Field {
 		add_action( 'gform_field_advanced_settings', array( $this, 'gform_field_advanced_settings' ), 10, 2 );
 		add_filter( 'gform_merge_tag_filter', array( $this, 'gform_merge_tag_filter' ), 10, 5 );
 		add_filter( 'gform_entries_field_value', array( $this, 'gform_entries_field_value' ), 10, 3 );
+
+		add_filter( 'gform_noconflict_scripts', array( $this, 'gform_noconflict_scripts' ) );
+		add_filter( 'gform_noconflict_styles', array( $this, 'gform_noconflict_styles' ) );
 	}
 
 	/**
@@ -534,6 +537,20 @@ return $some_js;
 		} else {
 			return $value;
 		}
+	}
+
+	function gform_noconflict_scripts( $required_scripts ) {
+		$required_scripts[] = 'form_admin_geocode';
+		$required_scripts[] = 'gfg_geocode';
+		$required_scripts[] = 'leafletphp-leaflet-js';
+		return $required_scripts;
+	}
+
+	function gform_noconflict_styles( $required_styles ) {
+		$required_styles[] = 'form_admin_geocode';
+		$required_styles[] = 'leafletphp-css';
+		$required_styles[] = 'leafletphp-leaflet-css';
+		return $required_styles;
 	}
 }
 
