@@ -45,42 +45,53 @@ Please see geocoders/geocodio.php and geocoders/geocodio.js for details.
 Screenshots
 -----------
 Brilliant Geocoder for Gravity Forms watches for changes to the form, then finds a location based on those fields.
+
 ![Brilliant Geocoder for Gravity Forms geocoding an address.](assets/screenshot-1.png)
 
 Brilliant Geocoder for Gravity Forms comes with support for three geocoders. To use Geocod.io or Google Maps API, 
 you will need to visit the Gravity Forms settings and enter your API keys.
+
 ![The Brilliant Geocoder for Gravity Forms settings page.](assets/screenshot-2.png)
 
 On individual form settings pages you can select which geocoder to use for the current form. Only geocoders with required API 
 key will appear in this list.
+
 ![The Brilliant Geocoder for Gravity Forms individual form settings page.](assets/screenshot-3.png)
 
 The fields that appear in the _Geocoding Source Fields_ section will dependo on which geocoder engine you've selected
 on the form's settings page.
 
 The geocoder fields you associate with source fields will be sent to the geocoder service. In this screenshot only a single field is needed.
+
 ![Configuring Brilliant Geocoder for Gravity Forms for use with a simple query geocoder.](assets/screenshot-4.png)
 
 Other geocoding engines may need separate street, city and other fields to geocode correctly. 
+
 ![Configuring Brilliant Geocoder for Gravity Forms for a more complex geocoding query.](assets/screenshot-5.png)
 
 You have a lot of control over what you display to the user. The default is to display a map which will show the geocoded location with a marker.
 You can also choose to show a GeoJSON Text area (which may only be for advanced users) or a pair of latitude and longitude text fields.
+
 ![Configuring Brilliant Geocoder for Gravity Forms ](assets/screenshot-6.png)
 
 Here's what the three inputs will look like to the user. The map is at the top, then the GeoJSON, then the Latitude and Longitude.
+
 ![Brilliant Geocoder for Gravity Forms showing all three user view options at once.](assets/screenshot-7.png)
 
 Alternatively you could hide the geocoding interface from the user completely. It will still work and submit correctly, it just won't be visible. 
+
 ![You can hide Brilliant Geocoder for Gravity Forms if you want to.](assets/screenshot-8.png)
 
 Geocoded results are stored as GeoJSON but, for convenience, just the coordinates are show on the entry listing page.
+
 ![Brilliant Geocoder for Gravity Forms keeps the entry page tidy.](assets/screenshot-9.png)
 
 On the full entry view page the map and the GeoJSON are shown.
+
 ![Brilliant Geocoder for Gravity Forms shows a map on the entry view page.](assets/screenshot-10.png)
 
 When editing existing form submissions, the map, GeoJSON and latitude and longitude fields are all interlinked. You can change any of them and the other two will update. You can also edit the associated input fields and the geocoding will be updated as you would expect.
+
 ![Brilliant Geocoder for Gravity Forms tries to make editing existing entries a brilliant experience too.](assets/screenshot-11.png)
 
 
