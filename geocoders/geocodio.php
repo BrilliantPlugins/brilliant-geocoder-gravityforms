@@ -80,27 +80,36 @@ function gfg_geocodio_geocoders( $geocoders ) {
 		'placeholder' => 'Geocod.io API Key',
 	);
 
-	/**
-	 * To add geocoders, include at least the keys 'geocoder' and 'geocoder_engine'. 
-	 *
-	 * The value of 'geocoder' should match up with one of the entries in the gfg_geocoder_fields 
-	 * filter above. 
-	 *
-	 * The value of 'geocoder_engine' should match up to a JavaScript function
-	 * in gfg_geocoder_engines
-	 *
-	 * Eg. window.gfg_geocoder_engines.geocodio in our case. Check out geocodio.js 
-	 * to see how this is done.
-	 */
-	$geocoders[] = array(
-		'geocoder' => 'Geocod.io full address',
-		'geocoder_engine' => 'geocodio',
-	);
+	// Fetch the GFG instance and get the settings.
+	$gfg = Geocoder_for_Gravity::get_instance();
+	$settings = $gfg->get_plugin_settings();
 
-	$geocoders[] = array(
-		'geocoder' => 'Geocod.io simple query',
-		'geocoder_engine' => 'geocodio',
-	);
+	/**
+	 * We only want to add Geocod.io as an option if the key is set.
+	 */
+	if ( !empty( $settings['geocodio_key'] ) ) {
+		/**
+		* To add geocoders, include at least the keys 'geocoder' and 'geocoder_engine'. 
+		*
+		* The value of 'geocoder' should match up with one of the entries in the gfg_geocoder_fields 
+		* filter above. 
+		*
+		* The value of 'geocoder_engine' should match up to a JavaScript function
+		* in gfg_geocoder_engines
+		*
+		* Eg. window.gfg_geocoder_engines.geocodio in our case. Check out geocodio.js 
+		* to see how this is done.
+		*/
+		$geocoders[] = array(
+			'geocoder' => 'Geocod.io full address',
+			'geocoder_engine' => 'geocodio',
+		);
+
+		$geocoders[] = array(
+			'geocoder' => 'Geocod.io simple query',
+			'geocoder_engine' => 'geocodio',
+		);
+	}
 
 	return $geocoders;
 }
