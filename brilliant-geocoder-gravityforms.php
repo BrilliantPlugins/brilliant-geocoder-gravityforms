@@ -49,8 +49,18 @@ add_action( 'gform_loaded', 'geocoder_for_gf_init', 5 );
  */
 function brilliant_geocoder_for_gravity_forms_activation_hook() {
 	if ( !class_exists( 'GFForms' ) || -1 === version_compare( GFForms::$version, '2.0.0' ) ) {
-		wp_die( 'This plugin requires Gravity Forms 2.0.0 or higher. Please install and activate it first, then activate this plugin.' );
+		wp_die( esc_html__( 'This plugin requires Gravity Forms 2.0.0 or higher. Please install and activate it first, then activate this plugin.', 'brilliant-geocoder-gravityforms') );
     }
+
+	$wpgm_loader = __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php';
+	if ( !file_exists( $wpgm_loader ) ) {
+		wp_die( esc_html__( "Could not load wp-geometa-lib. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
+	}
+
+	$leaflet_loader = __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php';
+	if ( !file_exists( $leaflet_loader ) ) {
+		wp_die( esc_html__( "Could not load Leaflet-PHP. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
+	}
 }
 
 register_activation_hook( __FILE__ , 'brilliant_geocoder_for_gravity_forms_activation_hook' );
