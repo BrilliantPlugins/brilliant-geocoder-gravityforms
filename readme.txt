@@ -115,6 +115,21 @@ For commercial support you can contact the plugin developer at
 
 For fast and short questions you can [contact me](https://twitter.com/stuporglue) on twitter.
 
+== Screenshots ==
+
+
+1. Brilliant Geocoder for Gravity Forms watches for changes to the form, then finds a location based on those fields.
+2. Brilliant Geocoder for Gravity Forms comes with support for three geocoders. To use Geocod.io or Google Maps API, you will need to visit the Gravity Forms settings and enter your API keys.
+3. On individual form settings pages you can select which geocoder to use for the current form. Only geocoders with required API key will appear in this list.
+4. The fields that appear in the _Geocoding Source Fields_ section will dependo on which geocoder engine you've selected on the form's settings page.  The geocoder fields you associate with source fields will be sent to the geocoder service. In this screenshot only a single field is needed.
+5. Other geocoding engines may need separate street, city and other fields to geocode correctly. 
+6. You have a lot of control over what you display to the user. The default is to display a map which will show the geocoded location with a marker.  You can also choose to show a GeoJSON Text area (which may only be for advanced users) or a pair of latitude and longitude text fields.
+7. Here's what the three inputs will look like to the user. The map is at the top, then the GeoJSON, then the Latitude and Longitude.
+8. Alternatively you could hide the geocoding interface from the user completely. It will still work and submit correctly, it just won't be visible. 
+9. Geocoded results are stored as GeoJSON but, for convenience, just the coordinates are show on the entry listing page.
+10. On the full entry view page the map and the GeoJSON are shown.
+11. When editing existing form submissions, the map, GeoJSON and latitude and longitude fields are all interlinked. You can change any of them and the other two will update. You can also edit the associated input fields and the geocoding will be updated as you would expect.
+
 == Changelog ==
 
 = 0.0.1 = 
