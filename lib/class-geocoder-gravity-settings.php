@@ -187,8 +187,8 @@ class Geocoder_for_Gravity extends GFAddOn {
 		$page = GFForms::get_page();
 		if ( 'form_editor' === $page || 'entry_detail' === $page ) {
 			$base_url = plugins_url( '', dirname( __FILE__ ) );
-			wp_enqueue_script( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.js', array( 'jquery' ), $this->_version );
-			wp_enqueue_style( 'form_admin_geocode', $base_url . '/assets/form_admin_geocode.css', array(), $this->_version );
+			wp_enqueue_script( 'form_admin_geocode', $base_url . '/media/form_admin_geocode.js', array( 'jquery' ), $this->_version );
+			wp_enqueue_style( 'form_admin_geocode', $base_url . '/media/form_admin_geocode.css', array(), $this->_version );
 
 			$leafletphp = new LeafletPHP();
 			$leafletphp->enqueue_scripts();
@@ -204,7 +204,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 	public function enqueue_scripts( $form = '', $is_ajax = false ) {
 		parent::enqueue_scripts( $form, $is_ajax );
 		$base_url = plugins_url( '', dirname( __FILE__ ) );
-		wp_enqueue_script( 'gfg_geocode', $base_url . '/assets/form_geocode.js', array( 'jquery' ), $this->_version );
+		wp_enqueue_script( 'gfg_geocode', $base_url . '/media/form_geocode.js', array( 'jquery' ), $this->_version );
 	}
 
 	/**

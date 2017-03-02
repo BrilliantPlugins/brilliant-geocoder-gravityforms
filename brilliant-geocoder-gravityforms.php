@@ -31,6 +31,20 @@ define( 'GFG_VERSION','0.0.1' );
 function geocoder_for_gf_init() {
 	require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
 	require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
+
+
+	$wpgm_loader = __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php';
+	if ( !file_exists( $wpgm_loader ) ) {
+		error_log( __( "Could not load wp-geometa-lib. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
+		return false;
+	} 
+
+	$leaflet_loader = __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php';
+	if ( !file_exists( $leaflet_loader ) ) {
+		error_log( __( "Could not load Leaflet-PHP. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
+		return false;
+	} 
+
 	require_once( __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php' );
 	require_once( __DIR__ . '/lib/leaflet-php/leaflet-php-loader.php' );
 
