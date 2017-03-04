@@ -75,6 +75,9 @@ function brilliant_geocoder_for_gravity_forms_activation_hook() {
 	if ( !file_exists( $leaflet_loader ) ) {
 		wp_die( esc_html__( "Could not load Leaflet-PHP. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
 	}
+
+	require_once( $wpgm_loader );
+	WP_GeoMeta::install();
 }
 
 register_activation_hook( __FILE__ , 'brilliant_geocoder_for_gravity_forms_activation_hook' );
