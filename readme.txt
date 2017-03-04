@@ -3,7 +3,7 @@ Contributors: stuporglue, luminfire, cimburacom
 Tags: Gravity Forms, GIS, geo, Spatial, geocoding, WP-GeoMeta, OSM, Nominatim, Google, Maps API, map, GeoJSON
 Tested up to: 4.7.2
 Requires at least: 4.4.1
-Stable tag: trunk
+Stable tag: 0.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
