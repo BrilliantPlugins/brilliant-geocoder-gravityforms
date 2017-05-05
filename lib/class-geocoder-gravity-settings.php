@@ -223,7 +223,7 @@ class Geocoder_for_Gravity extends GFAddOn {
 		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nominatim simple query' : $selected_geocoder );
 
 		// Build up the options.
-		$options = '';
+		$options = array();
 		$geocoders = $this->get_geocoders();
 		foreach ( $geocoders as $geocoder ) {
 
