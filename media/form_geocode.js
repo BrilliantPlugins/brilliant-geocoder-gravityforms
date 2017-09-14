@@ -125,7 +125,7 @@ window.gfg_sync_data = function( field_id ){
 
 	this.init = function(){
 		this.field_id = field_id;
-		this.mapobj = window['geocode_map_' + field_id];
+		this.mapobj = window.leafletphp.maps['geocode_map_' + field_id];
 		this.lat = jQuery('#' + field_id + '_lat');
 		this.lng = jQuery('#' + field_id + '_lng');
 		this.geojson = jQuery('#' + field_id);
