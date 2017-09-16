@@ -36,7 +36,7 @@ window.gfg_geocoder_engines.google_maps_api = function( args, success_callback, 
 		if ( geojson === '' ) {
 			failure_callback( success );
 		} else {
-			success_callback( success );
+			success_callback( geojson );
 		}
 	});
 };
