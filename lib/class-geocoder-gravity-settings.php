@@ -114,6 +114,10 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 		$geocoders = apply_filters( 'gfg_geocoders', $geocoders );
 
+		if ( !is_array( $geocoders ) || empty( $geocoders ) ) {
+			error_log("The list of geocoders is empty! It wasn't empty before applying the gfg_geocoders filter.");
+		}
+
 		return $geocoders;
 	}
 

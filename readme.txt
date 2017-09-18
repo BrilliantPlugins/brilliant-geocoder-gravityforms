@@ -105,6 +105,8 @@ For fast and short questions you can [contact me](https://twitter.com/stuporglue
 * Updated wp-geometa-lib.
 * Updated readme documentation.
 * Tested with WP 4.8
+* Some additional debugging code.
+* Fixed Google Geocoder.
 
 = 0.0.1 = 
 * Initial release!
