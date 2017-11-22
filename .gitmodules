@@ -3,4 +3,4 @@
 	url = https://github.com/LuminFire/leaflet-php.git
 [submodule "lib/wp-geometa-lib"]
 	path = lib/wp-geometa-lib
-	url = https://github.com/LuminFire/wp-geometa-lib.git
+	url = https://github.com/BrilliantPlugins/wp-geometa-lib.git
