@@ -108,22 +108,15 @@ With Gravity Forms installed, you can install this plugin in the usual WordPress
 
 ### Creating your first Geocoding field
 
-1. (Optional) Visit the Gravity Forms settings page enter a Geocod.io or
-Google Maps API key, or to change which email is sent with OSM Nominatim API calls.
+1. (Optional) Visit the Gravity Forms settings page enter a Geocod.io or Google Maps API key, or to change which email is sent with OSM Nominatim API calls.
 2. Create a new Gravity Form (or edit an existing one).
-3. (Optional) Visit the form settings page and select which geocoder to use.
-It will use OSM Nominatim by default.
+3. (Optional) Visit the form settings page and select which geocoder to use. It will use OSM Nominatim by default.
 4. Add the input fields you want the user to fill out.
 5. Add the Geocoder field (under the Advanced Fields tab).
-6. In the Geocoder field associate the geocoder parameters with the other input
-fields on your form. 
-7. Publish your form and add it to a page like you would any other Gravity
-Form!
-
-and add the Geocoder field from the Advanced Fields
-menu. Add other input fields, then in the Geocoder settings select which
-fields will be used as parameters for the geocoding.
-
+6. In the Geocoder field associate the geocoder parameters with the other input fields on your form. 
+7. Publish your form and add it to a page like you would any other Gravity Form!
+8. Add the non-Geocoding input fields.
+9. Add the Geocoder field from the Advanced Fields menu and in the field settings select which fields will be used as parameters for the geocoding.
 
 Frequently Asked Questions
 --------------------------
@@ -162,9 +155,16 @@ For fast and short questions you can [contact me](https://twitter.com/stuporglue
 
 Changelog
 ---------
-= 0.0.2 = 
+= 0.0.3 = 
 * Improved Handling of Google Maps API
 * Added support for Gravity Forms v2.4+
+
+= 0.0.2 =
+* Updated wp-geometa-lib.
+* Updated readme documentation.
+* Tested with WP 4.8
+* Some additional debugging code.
+* Fixed Google Geocoder.
 
 = 0.0.1 = 
 * Initial release!
