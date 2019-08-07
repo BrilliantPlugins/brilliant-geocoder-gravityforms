@@ -12,7 +12,7 @@ window.gfg_geocoder_engines.google_maps_api = function( args, success_callback, 
 		}
 	})
 
-	address = address.join('+');
+	address = address.join(' ');
 	params.address = address;
 	params.key = key
 
