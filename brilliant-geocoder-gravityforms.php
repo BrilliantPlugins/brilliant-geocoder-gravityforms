@@ -3,7 +3,7 @@
  * Plugin Name: Brilliant Geocoder for Gravity Forms
  * Plugin URI: http://luminfire.com
  * Description: This Brilliant Geocoder for Gravity Forms lets you get map coordinates based on the contents of other fields in your form.
- * Version: 0.0.3
+ * Version: 0.0.2
  * Author: Michael Moore / Luminfire.com
  * Text Domain: luminfire
  * Domain Path: /lang
@@ -23,7 +23,7 @@
  * can add support for other geocoders.
  */
 
-define( 'GFG_VERSION','0.0.3' );
+define( 'GFG_VERSION','0.0.2' );
 
 /**
  * Set up the geocoder when GravityForms loads.

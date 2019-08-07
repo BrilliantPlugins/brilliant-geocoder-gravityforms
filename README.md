@@ -151,17 +151,20 @@ If you create users or posts, and set a meta value to the value of a  Brilliant
 Geocoder field, that value will be stored as spatial metadata. 
 
 Brilliant Geocoder for Gravity Forms uses WP-GeoMeta internally. For sample 
-queries, please see the [WP-GeoMeta documentation](https://github.com/cimburadotcom/wp-geometa#querying).
+queries, please see the [WP-GeoMeta documentation](https://github.com/brillliantplugins/wp-geometa#querying).
 
 ### Where can I get help with GIS and WordPress?
 
 For commercial support you can contact the plugin developer at
-[Cimbura.com](https://cimbura.com/contact-us/project-request-form/)
+[luminfire.com](https://luminfire.com/contact-us/project-request-form/)
 
 For fast and short questions you can [contact me](https://twitter.com/stuporglue) on twitter.
 
 Changelog
 ---------
+= 0.0.2 = 
+* Improved Handling of Google Maps API
+* Added support for Gravity Forms v2.4+
 
 = 0.0.1 = 
 * Initial release!
