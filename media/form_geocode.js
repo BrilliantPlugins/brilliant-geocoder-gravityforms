@@ -18,6 +18,7 @@ function gfg_update_geocoder( e ) {
 
 		jQuery('#' + target_geocode_field).val(success);
 		jQuery('#' + target_geocode_field).trigger('change');
+
 	};
 
 
@@ -30,7 +31,7 @@ function gfg_update_geocoder( e ) {
 			update_me.push( gc );
 		} 
 	}
-
+	
 	var curgc; // current geocoder
 	var target_geocode_field; // the results field
 	var fields; // dict of all source IDs and their cooresponding keys in the geocode request
@@ -93,7 +94,7 @@ window.gfg_geocoder_engines = {
 						],
 					}
 				};
-
+				
 				delete res.boundingbox;
 				var props = res.extratags || {};
 				delete res.extratags;
@@ -125,7 +126,7 @@ window.gfg_sync_data = function( field_id ){
 
 	this.init = function(){
 		this.field_id = field_id;
-		this.mapobj = window.leafletphp.maps['geocode_map_' + field_id];
+		this.mapobj = window['geocode_map_' + field_id];
 		this.lat = jQuery('#' + field_id + '_lat');
 		this.lng = jQuery('#' + field_id + '_lng');
 		this.geojson = jQuery('#' + field_id);
