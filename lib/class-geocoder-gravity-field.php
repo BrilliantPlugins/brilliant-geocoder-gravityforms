@@ -110,6 +110,8 @@ class GF_Field_Geocoder extends GF_Field {
 		$is_form_editor  = $this->is_form_editor();
 
 		$logic_event = version_compare( GFForms::$version, '2.4-beta-1', '<' ) ? $this->get_conditional_logic_event( 'keyup' ) : '';
+		$tabindex     = $this->get_tabindex();
+
 		$id          = (int) $this->id;
 		$field_id    = $is_entry_detail || $is_form_editor || 0 === $form_id ? "input_$id" : 'input_' . $form_id . "_$id";
 
@@ -284,7 +286,7 @@ class GF_Field_Geocoder extends GF_Field {
 
 			print '<li class="geocoding_setting field_setting">';
 			print '<label class="section_label" for="field_admin_label">Geocoding Source Fields</label>';
-			print '<p>Configure the mapping for the <em>' . esc_html( $which_geocoder ) . '</em> eocoding service.</p>';
+			print '<p>Configure the mapping for the <em>' . esc_html( $which_geocoder ) . '</em> geocoding service.</p>';
 			print '<table class="default_input_values" id="">';
 
 			print '<thead><tr>';
@@ -438,7 +440,6 @@ return $some_js;
 				'city'			=> 'City',
 				'county'		=> 'County',
 				'state'			=> 'State',
-				'country'		=> 'Country',
 				'postalcode'	=> 'Postal Code',
 				'countrycode'	=> 'ISO 3166-1alpha2 Country Code',
 			),

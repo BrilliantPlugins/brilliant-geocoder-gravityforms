@@ -114,10 +114,6 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 		$geocoders = apply_filters( 'gfg_geocoders', $geocoders );
 
-		if ( !is_array( $geocoders ) || empty( $geocoders ) ) {
-			error_log("The list of geocoders is empty! It wasn't empty before applying the gfg_geocoders filter.");
-		}
-
 		return $geocoders;
 	}
 
@@ -224,11 +220,12 @@ class Geocoder_for_Gravity extends GFAddOn {
 
 		// See which geocoder we're using. Default to the OSM Nominatim geocoder.
 		$selected_geocoder = rgar( $form, 'which_geocoder' );
-		$selected_geocoder = ( empty( $selected_geocoder ) ? 'OSM Nominatim simple query' : $selected_geocoder );
-
+		$selected_geocoder = empty( $selected_geocoder ) ? 'OSM Nominatim simple query' : $selected_geocoder ;
+		
 		// Build up the options.
 		$options = array();
 		$geocoders = $this->get_geocoders();
+		
 		foreach ( $geocoders as $geocoder ) {
 
 			// Check if we have the required keys for the service.
@@ -249,14 +246,14 @@ class Geocoder_for_Gravity extends GFAddOn {
 		}
 
 		ksort( $options );
-
+		
 		// Make the settings string.
-		$setting = '<tr><th><label for="which_geocoder">Geocoder engine</label></th><td><select name="which_geocoder">';
+		$setting  = '<tr><th><label for="which_geocoder">Geocoder engine</label></th><td><select name="which_geocoder">';
 		$setting .= implode( '',$options );
 		$setting .= '</select></td></tr>';
 
 		$settings['Geocoder']['which_geocoder'] = $setting;
-
+	
 		return $settings;
 	}
 

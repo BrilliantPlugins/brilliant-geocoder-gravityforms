@@ -32,6 +32,7 @@ function geocoder_for_gf_init() {
 	require_once( __DIR__ . '/lib/class-geocoder-gravity-settings.php' );
 	require_once( __DIR__ . '/lib/class-geocoder-gravity-field.php' );
 
+
 	$wpgm_loader = __DIR__ . '/lib/wp-geometa-lib/wp-geometa-lib-loader.php';
 	if ( !file_exists( $wpgm_loader ) ) {
 		error_log( __( "Could not load wp-geometa-lib. You probably cloned wp-geometa from git and didn't check out submodules!", 'brilliant-geocoder-gravityforms' ) );
