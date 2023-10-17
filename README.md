@@ -3,13 +3,13 @@ Brilliant Geocoder for Gravity Forms
 ![Geocoder for Gravity Forms lets you get location information from form values.](assets/banner-1544x500.png)
 
 Brilliant Geocoder for Gravity Forms is a powerful and flexible geocoder field
-for Gravity Forms. The Geocoder field is easily be configured to capture geocoder 
+for Gravity Forms. The Geocoder field is easily be configured to capture geocoder
 input values from other form fields.
 
-It comes with the [OSM Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim) 
-geocoder enabled by default and supports [Geocod.io](https://geocod.io/) 
-and the [Google Maps API](https://developers.google.com/maps/) once you've entered 
-API keys for those services. 
+It comes with the [OSM Nominatim](http://wiki.openstreetmap.org/wiki/Nominatim)
+geocoder enabled by default and supports [Geocod.io](https://geocod.io/)
+and the [Google Maps API](https://developers.google.com/maps/) once you've entered
+API keys for those services.
 
 The geocoder field can be displayed as a map, as latitude and longitude
 fields, as the raw GeoJSON data, or hidden.
@@ -18,26 +18,26 @@ This plugin supports WP-GeoMeta, so if you create posts or users with geocoded
 data, their location will be stored as spatial metadata.
 
 **NOTICE**: _This plugin uses 3rd party services to provide geocoding results.
-The default geocoder, OSM Nominatim, requests that you include your email address 
-in API calls if you are making a large number of requests. We send the WP admin 
-email address by default. You can change what is sent on the Gravity Forms settings 
+The default geocoder, OSM Nominatim, requests that you include your email address
+in API calls if you are making a large number of requests. We send the WP admin
+email address by default. You can change what is sent on the Gravity Forms settings
 page, under *Geocoder*._.
 
 What is Geocoding?
 ------------------
 
-[Geocoding](https://en.wikipedia.org/wiki/Geocoding) is the process of turning 
-text (an address) into coordinates (latitude and longitude). With coordinates 
+[Geocoding](https://en.wikipedia.org/wiki/Geocoding) is the process of turning
+text (an address) into coordinates (latitude and longitude). With coordinates
 you can display data on a map and do location based searching.
 
 = Support for Other Geocoders =
 
 Brilliant Geocoders for Gravity Forms includes hooks so that you can add
-support for other geocoding services. 
+support for other geocoding services.
 
 OSM Nominatim support is built into the plugin, but Geocod.io and Google Maps
 API support is written the same way that you would add support for another
-service. The Geocod.io example in particular has extensive comments. 
+service. The Geocod.io example in particular has extensive comments.
 
 Please see geocoders/geocodio.php and geocoders/geocodio.js for details.
 
@@ -48,12 +48,12 @@ Brilliant Geocoder for Gravity Forms watches for changes to the form, then finds
 
 ![Brilliant Geocoder for Gravity Forms geocoding an address.](assets/screenshot-1.png)
 
-Brilliant Geocoder for Gravity Forms comes with support for three geocoders. To use Geocod.io or Google Maps API, 
+Brilliant Geocoder for Gravity Forms comes with support for three geocoders. To use Geocod.io or Google Maps API,
 you will need to visit the Gravity Forms settings and enter your API keys.
 
 ![The Brilliant Geocoder for Gravity Forms settings page.](assets/screenshot-2.png)
 
-On individual form settings pages you can select which geocoder to use for the current form. Only geocoders with required API 
+On individual form settings pages you can select which geocoder to use for the current form. Only geocoders with required API
 key will appear in this list.
 
 ![The Brilliant Geocoder for Gravity Forms individual form settings page.](assets/screenshot-3.png)
@@ -65,7 +65,7 @@ The geocoder fields you associate with source fields will be sent to the geocode
 
 ![Configuring Brilliant Geocoder for Gravity Forms for use with a simple query geocoder.](assets/screenshot-4.png)
 
-Other geocoding engines may need separate street, city and other fields to geocode correctly. 
+Other geocoding engines may need separate street, city and other fields to geocode correctly.
 
 ![Configuring Brilliant Geocoder for Gravity Forms for a more complex geocoding query.](assets/screenshot-5.png)
 
@@ -78,7 +78,7 @@ Here's what the three inputs will look like to the user. The map is at the top, 
 
 ![Brilliant Geocoder for Gravity Forms showing all three user view options at once.](assets/screenshot-7.png)
 
-Alternatively you could hide the geocoding interface from the user completely. It will still work and submit correctly, it just won't be visible. 
+Alternatively you could hide the geocoding interface from the user completely. It will still work and submit correctly, it just won't be visible.
 
 ![You can hide Brilliant Geocoder for Gravity Forms if you want to.](assets/screenshot-8.png)
 
@@ -98,7 +98,7 @@ When editing existing form submissions, the map, GeoJSON and latitude and longit
 Installation
 ------------
 
-Be sure that Gravity Forms 2.0.0 or higher is installed. 
+Be sure that Gravity Forms 2.0.0 or higher is installed.
 
 With Gravity Forms installed, you can install this plugin in the usual WordPress way.
 
@@ -116,7 +116,7 @@ It will use OSM Nominatim by default.
 4. Add the input fields you want the user to fill out.
 5. Add the Geocoder field (under the Advanced Fields tab).
 6. In the Geocoder field associate the geocoder parameters with the other input
-fields on your form. 
+fields on your form.
 7. Publish your form and add it to a page like you would any other Gravity
 Form!
 
@@ -137,20 +137,20 @@ Frequently Asked Questions
 
 Whatever fields you select as a geocoding source in Gravity Forms will be sent
 to the geocoding service. This would typically means that address details
-entered into the form will be sent to the geocoding service for processing.  
+entered into the form will be sent to the geocoding service for processing.
 
 Your API key and/or any other parameters required by the service's terms of service
-will also be sent. 
+will also be sent.
 
 Please review the Terms of Service of the service you select for details on
 how your submitted data is stored or used.
 
 ### How can I run spatial queries?
 
-If you create users or posts, and set a meta value to the value of a  Brilliant 
-Geocoder field, that value will be stored as spatial metadata. 
+If you create users or posts, and set a meta value to the value of a  Brilliant
+Geocoder field, that value will be stored as spatial metadata.
 
-Brilliant Geocoder for Gravity Forms uses WP-GeoMeta internally. For sample 
+Brilliant Geocoder for Gravity Forms uses WP-GeoMeta internally. For sample
 queries, please see the [WP-GeoMeta documentation](https://github.com/cimburadotcom/wp-geometa#querying).
 
 ### Where can I get help with GIS and WordPress?
@@ -163,7 +163,14 @@ For fast and short questions you can [contact me](https://twitter.com/stuporglue
 Changelog
 ---------
 
-= 0.0.1 = 
+= 0.0.2 =
+* Updated wp-geometa-lib.
+* Updated readme documentation.
+* Tested with WP 4.8
+* Some additional debugging code.
+* Fixed Google Geocoder.
+
+= 0.0.1 =
 * Initial release!
 * Support for OSM Nominatim
 * Support for Google Maps API
