@@ -19,7 +19,7 @@ function gfg_gmapi_geocoders( $geocoders ) {
 
 	$geocoders[] = array(
 		'name' => 'google_maps_key',
-		'label' => 'Google Maps API Key', 
+		'label' => 'Google Maps API Key',
 		'type' => 'text',
 		'class' => 'small',
 		'placeholder' => 'Google Maps API Key',

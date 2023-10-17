@@ -10,7 +10,7 @@
 window.gfg_geocoder_engines.geocodio = function( args, success_callback, failure_callback) {
 
 	/**
-	 * A geocoder engine should make an API call and call the appropriate callback function, 
+	 * A geocoder engine should make an API call and call the appropriate callback function,
 	 * either the success callback, or the failure callback.
 	 *
 	 * Here we turn the args dictionary into a query string and fetch the URL.

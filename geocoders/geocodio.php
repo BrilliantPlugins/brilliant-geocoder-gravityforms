@@ -24,7 +24,7 @@ function gfg_geocodio_fields( $fields ) {
 	 * The admin will be able to map each of the keys in the array ( street,
 	 * city, state, etc.) to another input in the form.
 	 *
-	 * The admin will see 'Stree', 'City', etc. which allows you to 
+	 * The admin will see 'Stree', 'City', etc. which allows you to
 	 * map ambiguous query parameters to something an admin will know
 	 * what to do with.
 	 */
@@ -33,12 +33,12 @@ function gfg_geocodio_fields( $fields ) {
 		'city'			=> 'City',
 		'state'			=> 'State',
 		'postal_code'	=> 'Postal Code',
-		'country'		=> 'Country' 
+		'country'		=> 'Country'
 	);
 
 	/**
-	 * Some geocoding services have multiple ways to run a 
-	 * geocode request. In Geocod.io's case you can either 
+	 * Some geocoding services have multiple ways to run a
+	 * geocode request. In Geocod.io's case you can either
 	 * specify individual address parts, or just give them a query
 	 * string and let them try to parse it.
 	 *
@@ -54,10 +54,10 @@ function gfg_geocodio_fields( $fields ) {
 }
 
 /**
- * This filter does two things. 
+ * This filter does two things.
  *
- * (1) It lets you populate the list of geocoders an admin can pick from. 
- * (2) It lets you add inputs for required keys or other info that a given geocoder needs. 
+ * (1) It lets you populate the list of geocoders an admin can pick from.
+ * (2) It lets you add inputs for required keys or other info that a given geocoder needs.
  */
 add_filter( 'gfg_geocoders', 'gfg_geocodio_geocoders' );
 function gfg_geocodio_geocoders( $geocoders ) {
@@ -68,9 +68,9 @@ function gfg_geocodio_geocoders( $geocoders ) {
 
 
 	/*
-	 * For settings include at least the keys 'name','label', and 'type' to create a new setting. 
+	 * For settings include at least the keys 'name','label', and 'type' to create a new setting.
 	 *
-	 * For a full list of keys, see: 
+	 * For a full list of keys, see:
 	 * https://www.gravityhelp.com/documentation/article/gfaddon/#creating-plugin-settings
 	 */
 	$geocoders[] = array(
@@ -89,15 +89,15 @@ function gfg_geocodio_geocoders( $geocoders ) {
 	 */
 	if ( !empty( $settings['geocodio_key'] ) ) {
 		/**
-		* To add geocoders, include at least the keys 'geocoder' and 'geocoder_engine'. 
+		* To add geocoders, include at least the keys 'geocoder' and 'geocoder_engine'.
 		*
-		* The value of 'geocoder' should match up with one of the entries in the gfg_geocoder_fields 
-		* filter above. 
+		* The value of 'geocoder' should match up with one of the entries in the gfg_geocoder_fields
+		* filter above.
 		*
 		* The value of 'geocoder_engine' should match up to a JavaScript function
 		* in gfg_geocoder_engines
 		*
-		* Eg. window.gfg_geocoder_engines.geocodio in our case. Check out geocodio.js 
+		* Eg. window.gfg_geocoder_engines.geocodio in our case. Check out geocodio.js
 		* to see how this is done.
 		*/
 		$geocoders[] = array(
@@ -116,7 +116,7 @@ function gfg_geocodio_geocoders( $geocoders ) {
 
 /**
  * This filter is similar to gfg_geocoder_fields, except that the returned
- * array is meant for geocoder parameters that users can't/shouldn't change such 
+ * array is meant for geocoder parameters that users can't/shouldn't change such
  * as API keys.
  *
  * @param array $keys An array of existing keys.
