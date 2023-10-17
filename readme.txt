@@ -3,7 +3,7 @@ Contributors: stuporglue, luminfire, cimburacom
 Tags: Gravity Forms, GIS, geo, Spatial, geocoding, WP-GeoMeta, OSM, Nominatim, Google, Maps API, map, GeoJSON
 Tested up to: 4.8
 Requires at least: 4.4.1
-Stable tag: 0.0.2
+Stable tag: 0.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,12 @@ For fast and short questions you can [contact me](https://twitter.com/stuporglue
 11. When editing existing form submissions, the map, GeoJSON and latitude and longitude fields are all interlinked. You can change any of them and the other two will update. You can also edit the associated input fields and the geocoding will be updated as you would expect.
 
 == Changelog ==
+
+= 0.0.4 =
+* Updated wp-geometa-lib.
+
+= 0.0.3 =
+* Fix for recent Gravity Forms
 
 = 0.0.2 =
 * Updated wp-geometa-lib.
